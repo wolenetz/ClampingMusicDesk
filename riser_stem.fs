@@ -1,4 +1,6 @@
-// Modular 2-Piece Riser Stem (Part 2A Extension + Part 2B Upper Head)
+// =========================================================================
+// PART 2: Modular 2-Piece Riser Stem (Part 2A Extension + Part 2B Upper Head)
+// =========================================================================
 FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
 
@@ -225,7 +227,6 @@ function onStageRiserStemImpl(context is Context, id is Id, definition is map)
     });
 }
 
-// Export the feature so it appears in OnShape with proper annotations
 annotation { "Feature Type Name" : "OnStage Riser Stem" }
 export const onStageRiserStem = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
