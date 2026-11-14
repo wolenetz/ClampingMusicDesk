@@ -117,7 +117,7 @@ function onStageDetentPinsImpl(context is Context, id is Id, definition is map)
                     "operationType" : BooleanOperationType.SUBTRACTION
             });
         }
-    });
+}
 
 annotation { "Feature Type Name" : "OnStage Detent Pins" }
 export const onStageDetentPins = defineFeature(function(context is Context, id is Id, definition is map)
