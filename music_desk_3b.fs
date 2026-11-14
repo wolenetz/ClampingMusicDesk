@@ -1,5 +1,5 @@
 // =========================================================================
-// PART 3B: Upper Sliding Music Desk (Fixed 4-Point Trapezoid Dovetail Runners)
+// PART 3B: Upper Sliding Music Desk (Fixed 4-Point Runners + Loosened Accessory Rail)
 // =========================================================================
 FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
@@ -106,21 +106,22 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map)
     }
 
     // 4. Part 4 Horizontal Clamp Accessory Rail on Top Back of Part 3B (Z = 150mm to 178mm)
-    // Inset by 3mm on Left & Right ends (X = cx - 117mm to cx + 117mm) so the rail ends sit cleanly
-    // inside the 2.8mm rounded vertical back edge of upperPlate without overhanging in mid-air!
-    var railInset = 3 * millimeter;
-    var railBaseZ = headTopZ - (40 * millimeter);
+    // Inset by railClearTol (0.25mm) on all mating faces so Part 4 page clamps slide smoothly
+    var railInset    = 3 * millimeter;
+    var railBaseZ    = headTopZ - (40 * millimeter);
+    var railClearTol = 0.25 * millimeter; // Loosens fit against existing Part 4 clamps without modifying Part 4
+
     var railSketch = newSketchOnPlane(context, id + "railSketch", {
             "sketchPlane" : plane(vector(cx - halfW + railInset, cy, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
     });
-    var u1 = vector(0 * millimeter,  railBaseZ + 4 * millimeter);
-    var u2 = vector(6 * millimeter,  railBaseZ + 4 * millimeter);
-    var u3 = vector(6 * millimeter,  railBaseZ);
-    var u4 = vector(14 * millimeter, railBaseZ + 4 * millimeter);
-    var u5 = vector(14 * millimeter, railBaseZ + 24 * millimeter);
-    var u6 = vector(6 * millimeter,  railBaseZ + 28 * millimeter);
-    var u7 = vector(6 * millimeter,  railBaseZ + 24 * millimeter);
-    var u8 = vector(0 * millimeter,  railBaseZ + 24 * millimeter);
+    var u1 = vector(0 * millimeter,                railBaseZ + 4 * millimeter + railClearTol);
+    var u2 = vector(6 * millimeter + railClearTol, railBaseZ + 4 * millimeter + railClearTol);
+    var u3 = vector(6 * millimeter + railClearTol, railBaseZ + railClearTol);
+    var u4 = vector(14 * millimeter - railClearTol, railBaseZ + 4 * millimeter + railClearTol);
+    var u5 = vector(14 * millimeter - railClearTol, railBaseZ + 24 * millimeter - railClearTol);
+    var u6 = vector(6 * millimeter + railClearTol, railBaseZ + 28 * millimeter - railClearTol);
+    var u7 = vector(6 * millimeter + railClearTol, railBaseZ + 24 * millimeter - railClearTol);
+    var u8 = vector(0 * millimeter,                railBaseZ + 24 * millimeter - railClearTol);
 
     skLineSegment(railSketch, "uL1", { "start" : u1, "end" : u2 });
     skLineSegment(railSketch, "uL2", { "start" : u2, "end" : u3 });
