@@ -1,4 +1,6 @@
-// Horizontal-Split L-Clamp (Dorsal Bolt Raised +4mm for Max Part 1A Strength)
+// =========================================================================
+// PART 1: Horizontal-Split L-Clamp (Dorsal Bolt Raised +4mm for Max Part 1A Strength)
+// =========================================================================
 FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
 
@@ -312,7 +314,6 @@ function onStageLClampImpl(context is Context, id is Id, definition is map)
     });
 }
 
-// Export the feature so it appears in OnShape with proper annotations
 annotation { "Feature Type Name" : "OnStage L-Clamp" }
 export const onStageLClamp = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
