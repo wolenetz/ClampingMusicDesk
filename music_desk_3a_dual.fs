@@ -1,52 +1,368 @@
-// Dual-Riser Lower Stationary Music Desk (Part 3A-Dual)
+// Dual-Riser Lower Stationary Music Desk (Unified Side Profile & Tapered Spine)
 import(path : "onshape/std/common.fs", version : "2411.0");
 import(path : "./utils.fs", version : "2411.0");
 
 function onStageMusicDesk3ADual(context is Context, id is Id, definition is map)
 {
-    // Get variables with defaults
-    var deskWidth = getVar(context, "deskWidth", 60 * millimeter);
-    var deskHeight = getVar(context, "deskHeight", 20 * millimeter);
-    var deskDepth = getVar(context, "deskDepth", 15 * millimeter);
-    var railHeight = getVar(context, "railHeight", 14 * millimeter);
-    var railWidth = getVar(context, "railWidth", 10 * millimeter);
+    var tol        = getVar(context, "tol", 0.3 * millimeter);
+    var deskAngle = getVar(context, "desk_angle", 15 * degree);
+    var m3Clear   = getVar(context, "m3_clear", 3.4 * millimeter);
 
-    // Create base sketch
-    var baseSketch = newSketchOnPlane(context, id + "baseSketch", {
-            "sketchPlane" : plane(vector(0 * millimeter, 0 * millimeter, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
+    var slideTol  = tol + (0.15 * millimeter);
+
+    // Dual-Offset Configuration: Two desks offset in X-axis (230mm and 300mm)
+    var cx1 = 230 * millimeter;
+    var cx2 = 300 * millimeter;
+    var cy = 0 * millimeter;
+
+    var deskW  = 240 * millimeter;
+    var halfW  = deskW / 2;       // 120mm
+    var lowerH = 180 * millimeter; // Height of Part 3A lower plate
+    var plateT = 6 * millimeter;   // 6mm rigid main backplate
+    var shelfT = 8 * millimeter;   // 8mm bottom shelf
+    var shelfD = 48 * millimeter;  // 48mm inside book-resting depth
+    var lipT   = 5 * millimeter;   // 5mm front retention lip thickness
+    var lipH   = 8 * millimeter;   // 8mm upward front retention lip
+
+    var yFrontEdge   = cy - plateT - shelfD - lipT; // -59mm
+    var railXOffsets = [-75 * millimeter, 75 * millimeter];
+
+    // First Desk (at X = 230mm)
+    // 1. Lower Vertical Backing Plate (Y = -6mm to 0mm, Z = 0 to 180mm)
+    fCuboid(context, id + "backPlate1", {
+            "corner1" : vector(cx1 - halfW, cy - plateT, 0 * millimeter),
+            "corner2" : vector(cx1 + halfW, cy,           lowerH)
     });
 
-    // Sketch the dual music desk profile
-    skLineSegment(baseSketch, "l1", { "start" : vector(0 * millimeter, 0 * millimeter), "end" : vector(deskWidth, 0 * millimeter) });
-    skLineSegment(baseSketch, "l2", { "start" : vector(deskWidth, 0 * millimeter), "end" : vector(deskWidth, deskHeight) });
-    skLineSegment(baseSketch, "l3", { "start" : vector(deskWidth, deskHeight), "end" : vector(0 * millimeter, deskHeight) });
-    skLineSegment(baseSketch, "l4", { "start" : vector(0 * millimeter, deskHeight), "end" : vector(0 * millimeter, 0 * millimeter) });
+    // 2. Continuous Profiled Book Shelf + Front Lip + 4mm Inside Root Chamfer in ONE Sketch!
+    // Note: Sketch plane X-axis is vector(0, 1, 0) [Global Y] and Y-axis is vector(0, 0, 1) [Global Z]
+    var shelfSketch = newSketchOnPlane(context, id + "shelfSketch1", {
+            "sketchPlane" : plane(vector(cx1 - halfW, 0 * millimeter, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
+    });
 
-    // Add cutouts for the rails
-    skLineSegment(baseSketch, "cut1", { "start" : vector(deskWidth - railWidth, 0 * millimeter), "end" : vector(deskWidth, 0 * millimeter) });
-    skLineSegment(baseSketch, "cut2", { "start" : vector(deskWidth, 0 * millimeter), "end" : vector(deskWidth, railHeight) });
-    skLineSegment(baseSketch, "cut3", { "start" : vector(deskWidth, railHeight), "end" : vector(deskWidth - railWidth, railHeight) });
-    skLineSegment(baseSketch, "cut4", { "start" : vector(deskWidth - railWidth, railHeight), "end" : vector(deskWidth - railWidth, 0 * millimeter) });
+    var lipTopZ = shelfT + lipH;         // 16mm
+    var rLip     = 2.4 * millimeter;        // Smooth 2.4mm front-top bullnose radius on the 5mm lip
+    var arcOff   = rLip * (1 - cos(45 * degree)); // Exact 45-deg point on circle (~0.703mm from corner)
 
-    // Add second cutout for the second rail
-    skLineSegment(baseSketch, "cut5", { "start" : vector(0 * millimeter, 0 * millimeter), "end" : vector(railWidth, 0 * millimeter) });
-    skLineSegment(baseSketch, "cut6", { "start" : vector(railWidth, 0 * millimeter), "end" : vector(railWidth, railHeight) });
-    skLineSegment(baseSketch, "cut7", { "start" : vector(railWidth, railHeight), "end" : vector(0 * millimeter, railHeight) });
-    skLineSegment(baseSketch, "cut8", { "start" : vector(0 * millimeter, railHeight), "end" : vector(0 * millimeter, 0 * millimeter) });
+    var s1 = vector(-plateT,                  0 * millimeter);         // Bottom-back at backplate
+    var s2 = vector(yFrontEdge,              0 * millimeter);         // Bottom-front (flat on print bed)
+    var s3 = vector(yFrontEdge,              lipTopZ - rLip);      // Start of front-top lip curve
+    var sM = vector(yFrontEdge + arcOff,    lipTopZ - arcOff);    // Exact tangent arc midpoint
+    var s4 = vector(yFrontEdge + rLip,      lipTopZ);              // End of front-top lip curve
+    var s5 = vector(yFrontEdge + lipT,      lipTopZ);              // Top-back of lip
+    var s6 = vector(yFrontEdge + lipT,      shelfT);                // Inside bottom of lip
+    var s7 = vector(-plateT - 4 * millimeter, shelfT);                // Start of 4mm inside root chamfer
+    var s8 = vector(-plateT,                  shelfT + 4 * millimeter); // Top of 4mm inside root chamfer
 
-    skSolve(baseSketch);
+    skLineSegment(shelfSketch, "sBot",      { "start" : s1, "end" : s2 });
+    skLineSegment(shelfSketch, "sFront",    { "start" : s2, "end" : s3 });
+    skArc(shelfSketch,         "sNoseArc",  { "start" : s3, "mid" : sM, "end" : s4 });
+    skLineSegment(shelfSketch, "sLipTop",   { "start" : s4, "end" : s5 });
+    skLineSegment(shelfSketch, "sLipBack",  { "start" : s5, "end" : s6 });
+    skLineSegment(shelfSketch, "sShelfTop", { "start" : s6, "end" : s7 });
+    skLineSegment(shelfSketch, "sRootBev",  { "start" : s7, "end" : s8 });
+    skLineSegment(shelfSketch, "sClose",    { "start" : s8, "end" : s1 });
+    skSolve(shelfSketch);
 
-    // Extrude the base
-    opExtrude(context, id + "extBase", {
-            "entities" : qSketchRegion(id + "baseSketch"),
-            "direction" : vector(0, 0, 1),
+    opExtrude(context, id + "extShelfLip1", {
+            "entities" : qSketchRegion(id + "shelfSketch1"),
+            "direction" : vector(1, 0, 0),
             "endBound" : BoundingType.BLIND,
-            "endDepth" : deskDepth
+            "endDepth" : deskW
     });
 
-    // Add a chamfer to the top edge
-    opChamfer(context, id + "chamferTop", {
-            "entities" : qEdge(id + "extBase", 1),
-            "distance" : 1 * millimeter
+    // 3. Full-Width Lower Rear Torsion Spine (Y = 0 to +6mm, Z = 0 to 50mm)
+    // Making it full-width (cx - halfW to cx + halfW) makes its left/right faces 100% coplanar with
+    // backPlate and extShelfLip, so when unioned below, they merge into ONE flat side face with zero steps!
+    fCuboid(context, id + "rearSpine1", {
+            "corner1" : vector(cx1 - halfW, cy,                  0 * millimeter),
+            "corner2" : vector(cx1 + halfW, cy + 6 * millimeter, 50 * millimeter)
+    });
+
+    // 4. Union the Main Desk Shell First (Merges Backplate + Shelf/Lip + Rear Spine into a single continuous body)
+    opBoolean(context, id + "unionDeskShell1", {
+            "tools" : qUnion([
+                    qCreatedBy(id + "backPlate1", EntityType.BODY),
+                    qCreatedBy(id + "extShelfLip1", EntityType.BODY),
+                    qCreatedBy(id + "rearSpine1", EntityType.BODY)
+            ]),
+            "operationType" : BooleanOperationType.UNION
+    });
+
+    // 5. Round the Outer Vertical Edges of the Unified Shell!
+    // Because the 3 parts are already unioned, Onshape rounds the TRUE outer perimeter corners (at Y = -59mm, Y = 0mm, Y = +6mm)
+    // so the rear spine tapers smoothly into the backplate edge with zero internal pinches!
+    var shellBody1 = qCreatedBy(id + "backPlate1", EntityType.BODY);
+    try silent
+    {
+        opFillet(context, id + "filletOuterVerticals1", {
+            "entities" : qParallelEdges(qOwnedByBody(shellBody1, EntityType.EDGE), vector(0, 0, 1)),
+            "radius" : 4.5 * millimeter
+        });
+    }
+
+    // 6. Two Vertical Female Dovetail Guide Housings (X = +/-75mm, Z = 50mm to 180mm)
+    var guideHalfW = 16 * millimeter;
+    var guideDepth  = 14 * millimeter;
+    var guideBodies1  = [];
+    var gIdx = 0;
+
+    for (var rx in railXOffsets)
+    {
+        gIdx += 1;
+        fCuboid(context, id + ("guideBlock1" ~ gIdx), {
+                "corner1" : vector(cx1 + rx - guideHalfW, cy,               50 * millimeter),
+                "corner2" : vector(cx1 + rx + guideHalfW, cy + guideDepth, lowerH)
+        });
+        guideBodies1 = append(guideBodies1, qCreatedBy(id + ("guideBlock1" ~ gIdx), EntityType.BODY));
+    }
+
+    // 7. Center Angled Heavy-Duty Riser Receiver Block (64mm wide x 95mm tall housing)
+    var recHalfW = 32 * millimeter;
+    var recHeight = 95 * millimeter;
+    var baseDepth = 26 * millimeter + (recHeight * sin(deskAngle));
+
+    var wedgeSketch = newSketchOnPlane(context, id + "wedgeSketch1", {
+            "sketchPlane" : plane(vector(cx1 - recHalfW, cy, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
+    });
+    var w1 = vector(0 * millimeter, 0 * millimeter);
+    var w2 = vector(baseDepth,     0 * millimeter);
+    var w3 = vector(baseDepth - (recHeight * sin(deskAngle)), recHeight * cos(deskAngle));
+    var w4 = vector(0 * millimeter, recHeight * cos(deskAngle));
+
+    skLineSegment(wedgeSketch, "wBot",   { "start" : w1, "end" : w2 });
+    skLineSegment(wedgeSketch, "wBack",  { "start" : w2, "end" : w3 });
+    skLineSegment(wedgeSketch, "wTop",   { "start" : w3, "end" : w4 });
+    skLineSegment(wedgeSketch, "wFront", { "start" : w4, "end" : w1 });
+    skSolve(wedgeSketch);
+
+    opExtrude(context, id + "extReceiver1", {
+            "entities" : qSketchRegion(id + "wedgeSketch1"),
+            "direction" : vector(1, 0, 0),
+            "endBound" : BoundingType.BLIND,
+            "endDepth" : recHalfW * 2
+    });
+
+    // Union Guide Blocks and Center Receiver onto the Filleted Desk Shell
+    opBoolean(context, id + "unionLowerDesk1", {
+            "tools" : qUnion(concatenateArrays([
+                    [
+                        shellBody1,
+                        qCreatedBy(id + "extReceiver1", EntityType.BODY)
+                    ],
+                    guideBodies1
+            ])),
+            "operationType" : BooleanOperationType.UNION
+    });
+
+    // 8. Cut Center Angled Riser Female Dovetail + Dual Vertical Slider Female Dovetails + Detent Pin Holes
+    var uSlide = vector(0, -sin(deskAngle), cos(deskAngle));
+    var cornerOrigin = vector(cx1, baseDepth, 0 * millimeter) - (8 * millimeter) * uSlide;
+
+    var doveCutSketch = newSketchOnPlane(context, id + "doveCutSketch1", {
+            "sketchPlane" : plane(cornerOrigin, uSlide, vector(1, 0, 0))
+    });
+
+    var dOuter   = 2 * millimeter;
+    var dInner   = -(18 * millimeter) - tol;
+    var halfNeck = (13.0 * millimeter) + tol;
+    var halfWide = (19.0 * millimeter) + tol;
+
+    skLineSegment(doveCutSketch, "dBack",  { "start" : vector(-halfNeck, dOuter), "end" : vector( halfNeck, dOuter) });
+    skLineSegment(doveCutSketch, "dRight", { "start" : vector( halfNeck, dOuter), "end" : vector( halfWide, dInner) });
+    skLineSegment(doveCutSketch, "dFront", { "start" : vector( halfWide, dInner), "end" : vector(-halfWide, dInner) });
+    skLineSegment(doveCutSketch, "dLeft",  { "start" : vector(-halfWide, dInner), "end" : vector(-halfNeck, dOuter) });
+    skSolve(doveCutSketch);
+
+    opExtrude(context, id + "extDoveCut1", {
+            "entities" : qSketchRegion(id + "doveCutSketch1"),
+            "direction" : uSlide,
+            "endBound" : BoundingType.BLIND,
+            "endDepth" : 79 * millimeter
+    });
+
+    var femSlideSk = newSketchOnPlane(context, id + "femSlideSk1", {
+            "sketchPlane" : plane(vector(cx1, cy, 50 * millimeter), vector(0, 0, 1), vector(1, 0, 0))
+    });
+
+    var sYOut  = guideDepth + (1 * millimeter);
+    var sYIn   = (5 * millimeter) - slideTol;
+    var sHNeck = (6 * millimeter) + slideTol;
+    var sHWide = (9 * millimeter) + slideTol;
+
+    var lockTools1 = [];
+    var sIdx = 0;
+    for (var rx in railXOffsets)
+    {
+        sIdx += 1;
+        skLineSegment(femSlideSk, "fsB" ~ sIdx, { "start" : vector(rx - sHNeck, sYOut), "end" : vector(rx + sHNeck, sYOut) });
+        skLineSegment(femSlideSk, "fsR" ~ sIdx, { "start" : vector(rx + sHNeck, sYOut), "end" : vector(rx + sHWide, sYIn) });
+        skLineSegment(femSlideSk, "fsF" ~ sIdx, { "start" : vector(rx + sHWide, sYIn),  "end" : vector(rx - sHWide, sYIn) });
+        skLineSegment(femSlideSk, "fsL" ~ sIdx, { "start" : vector(rx - sHWide, sYIn),  "end" : vector(rx - sHNeck, sYOut) });
+
+        fCylinder(context, id + ("baseDetentHole" ~ sIdx), {
+            "bottomCenter" : vector(cx1 + rx - guideHalfW - (2 * millimeter), cy + 9.5 * millimeter, 160 * millimeter),
+            "topCenter"    : vector(cx1 + rx + guideHalfW + (2 * millimeter), cy + 9.5 * millimeter, 160 * millimeter),
+            "radius"       : m3Clear / 2
+        });
+        lockTools1 = append(lockTools1, qCreatedBy(id + ("baseDetentHole" ~ sIdx), EntityType.BODY));
+    }
+    skSolve(femSlideSk);
+    opExtrude(context, id + "extFemSlide1", {
+        "entities" : qSketchRegion(id + "femSlideSk1"),
+        "direction" : vector(0, 0, 1),
+        "endBound" : BoundingType.BLIND,
+        "endDepth" : 132 * millimeter
+    });
+    opBoolean(context, id + "finalLowerCut1", {
+        "tools" : qUnion(concatenateArrays([
+            [
+                qCreatedBy(id + "extDoveCut1", EntityType.BODY),
+                qCreatedBy(id + "extFemSlide1", EntityType.BODY)
+            ],
+            lockTools1
+        ])),
+        "targets" : shellBody1,
+        "operationType" : BooleanOperationType.SUBTRACTION
+    });
+
+    // Second Desk (at X = 300mm) - Mirror of First Desk but offset in X-axis
+    // 1. Lower Vertical Backing Plate (Y = -6mm to 0mm, Z = 0 to 180mm)
+    fCuboid(context, id + "backPlate2", {
+            "corner1" : vector(cx2 - halfW, cy - plateT, 0 * millimeter),
+            "corner2" : vector(cx2 + halfW, cy,           lowerH)
+    });
+
+    // 2. Continuous Profiled Book Shelf + Front Lip + 4mm Inside Root Chamfer in ONE Sketch!
+    var shelfSketch2 = newSketchOnPlane(context, id + "shelfSketch2", {
+            "sketchPlane" : plane(vector(cx2 - halfW, 0 * millimeter, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
+    });
+
+    skLineSegment(shelfSketch2, "sBot",      { "start" : s1, "end" : s2 });
+    skLineSegment(shelfSketch2, "sFront",    { "start" : s2, "end" : s3 });
+    skArc(shelfSketch2,         "sNoseArc",  { "start" : s3, "mid" : sM, "end" : s4 });
+    skLineSegment(shelfSketch2, "sLipTop",   { "start" : s4, "end" : s5 });
+    skLineSegment(shelfSketch2, "sLipBack",  { "start" : s5, "end" : s6 });
+    skLineSegment(shelfSketch2, "sShelfTop", { "start" : s6, "end" : s7 });
+    skLineSegment(shelfSketch2, "sRootBev",  { "start" : s7, "end" : s8 });
+    skLineSegment(shelfSketch2, "sClose",    { "start" : s8, "end" : s1 });
+    skSolve(shelfSketch2);
+
+    opExtrude(context, id + "extShelfLip2", {
+            "entities" : qSketchRegion(id + "shelfSketch2"),
+            "direction" : vector(1, 0, 0),
+            "endBound" : BoundingType.BLIND,
+            "endDepth" : deskW
+    });
+
+    // 3. Full-Width Lower Rear Torsion Spine (Y = 0 to +6mm, Z = 0 to 50mm)
+    fCuboid(context, id + "rearSpine2", {
+            "corner1" : vector(cx2 - halfW, cy,                  0 * millimeter),
+            "corner2" : vector(cx2 + halfW, cy + 6 * millimeter, 50 * millimeter)
+    });
+
+    // 4. Union the Main Desk Shell First (Merges Backplate + Shelf/Lip + Rear Spine into a single continuous body)
+    opBoolean(context, id + "unionDeskShell2", {
+            "tools" : qUnion([
+                    qCreatedBy(id + "backPlate2", EntityType.BODY),
+                    qCreatedBy(id + "extShelfLip2", EntityType.BODY),
+                    qCreatedBy(id + "rearSpine2", EntityType.BODY)
+            ]),
+            "operationType" : BooleanOperationType.UNION
+    });
+
+    // 5. Round the Outer Vertical Edges of the Unified Shell!
+    var shellBody2 = qCreatedBy(id + "backPlate2", EntityType.BODY);
+    try silent
+    {
+        opFillet(context, id + "filletOuterVerticals2", {
+            "entities" : qParallelEdges(qOwnedByBody(shellBody2, EntityType.EDGE), vector(0, 0, 1)),
+            "radius" : 4.5 * millimeter
+        });
+    }
+
+    // 6. Two Vertical Female Dovetail Guide Housings (X = +/-75mm, Z = 50mm to 180mm)
+    var guideBodies2  = [];
+    gIdx = 0;
+    for (var rx in railXOffsets)
+    {
+        gIdx += 1;
+        fCuboid(context, id + ("guideBlock2" ~ gIdx), {
+                "corner1" : vector(cx2 + rx - guideHalfW, cy,               50 * millimeter),
+                "corner2" : vector(cx2 + rx + guideHalfW, cy + guideDepth, lowerH)
+        });
+        guideBodies2 = append(guideBodies2, qCreatedBy(id + ("guideBlock2" ~ gIdx), EntityType.BODY));
+    }
+
+    // 7. Center Angled Heavy-Duty Riser Receiver Block (64mm wide x 95mm tall housing)
+    var wedgeSketch2 = newSketchOnPlane(context, id + "wedgeSketch2", {
+            "sketchPlane" : plane(vector(cx2 - recHalfW, cy, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
+    });
+
+    skLineSegment(wedgeSketch2, "wBot",   { "start" : w1, "end" : w2 });
+    skLineSegment(wedgeSketch2, "wBack",  { "start" : w2, "end" : w3 });
+    skLineSegment(wedgeSketch2, "wTop",   { "start" : w3, "end" : w4 });
+    skLineSegment(wedgeSketch2, "wFront", { "start" : w4, "end" : w1 });
+    skSolve(wedgeSketch2);
+
+    opExtrude(context, id + "extReceiver2", {
+            "entities" : qSketchRegion(id + "wedgeSketch2"),
+            "direction" : vector(1, 0, 0),
+            "endBound" : BoundingType.BLIND,
+            "endDepth" : recHalfW * 2
+    });
+
+    // Union Guide Blocks and Center Receiver onto the Filleted Desk Shell
+    opBoolean(context, id + "unionLowerDesk2", {
+            "tools" : qUnion(concatenateArrays([
+                    [
+                        shellBody2,
+                        qCreatedBy(id + "extReceiver2", EntityType.BODY)
+                    ],
+                    guideBodies2
+            ])),
+            "operationType" : BooleanOperationType.UNION
+    });
+
+    // 8. Cut Center Angled Riser Female Dovetail + Dual Vertical Slider Female Dovetails + Detent Pin Holes
+    var doveCutSketch2 = newSketchOnPlane(context, id + "doveCutSketch2", {
+            "sketchPlane" : plane(cornerOrigin, uSlide, vector(1, 0, 0))
+    });
+
+    skLineSegment(doveCutSketch2, "dBack",  { "start" : vector(-halfNeck, dOuter), "end" : vector( halfNeck, dOuter) });
+    skLineSegment(doveCutSketch2, "dRight", { "start" : vector( halfNeck, dOuter), "end" : vector( halfWide, dInner) });
+    skLineSegment(doveCutSketch2, "dFront", { "start" : vector( halfWide, dInner), "end" : vector(-halfWide, dInner) });
+    skLineSegment(doveCutSketch2, "dLeft",  { "start" : vector(-halfWide, dInner), "end" : vector(-halfNeck, dOuter) });
+    skSolve(doveCutSketch2);
+
+    var lockTools2 = [];
+    sIdx = 0;
+    for (var rx in railXOffsets)
+    {
+        sIdx += 1;
+        fCylinder(context, id + ("baseDetentHole2" ~ sIdx), {
+            "bottomCenter" : vector(cx2 + rx - guideHalfW - (2 * millimeter), cy + 9.5 * millimeter, 160 * millimeter),
+            "topCenter"    : vector(cx2 + rx + guideHalfW + (2 * millimeter), cy + 9.5 * millimeter, 160 * millimeter),
+            "radius"       : m3Clear / 2
+        });
+        lockTools2 = append(lockTools2, qCreatedBy(id + ("baseDetentHole2" ~ sIdx), EntityType.BODY));
+    }
+
+    opExtrude(context, id + "extFemSlide2", {
+        "entities" : qSketchRegion(id + "femSlideSk1"),
+        "direction" : vector(0, 0, 1),
+        "endBound" : BoundingType.BLIND,
+        "endDepth" : 132 * millimeter
+    });
+    opBoolean(context, id + "finalLowerCut2", {
+        "tools" : qUnion(concatenateArrays([
+            [
+                qCreatedBy(id + "extDoveCut2", EntityType.BODY),
+                qCreatedBy(id + "extFemSlide2", EntityType.BODY)
+            ],
+            lockTools2
+        ])),
+        "targets" : shellBody2,
+        "operationType" : BooleanOperationType.SUBTRACTION
     });
 }

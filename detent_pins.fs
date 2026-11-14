@@ -1,46 +1,64 @@
-// Flat-Bed Printable T-Handle Detent Pin (Part 5)
+// Flat-Bed Printable T-Handle Detent Pin (Part 5) - Unified Implementation
 import(path : "onshape/std/common.fs", version : "2411.0");
 import(path : "./utils.fs", version : "2411.0");
 
 function onStageDetentPins(context is Context, id is Id, definition is map)
 {
-    // Get variables with defaults
-    var pinWidth = getVar(context, "pinWidth", 8 * millimeter);
-    var pinHeight = getVar(context, "pinHeight", 12 * millimeter);
-    var pinDepth = getVar(context, "pinDepth", 20 * millimeter);
-    var handleWidth = getVar(context, "handleWidth", 15 * millimeter);
-    var handleHeight = getVar(context, "handleHeight", 8 * millimeter);
+    var tol        = getVar(context, "tol", 0.3 * millimeter);
+    var m3Clear   = getVar(context, "m3_clear", 3.4 * millimeter);
 
-    // Create base sketch
-    var baseSketch = newSketchOnPlane(context, id + "baseSketch", {
-            "sketchPlane" : plane(vector(0 * millimeter, 0 * millimeter, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
+    // Detent pin dimensions
+    var pinWidth = 8 * millimeter;
+    var pinHeight = 12 * millimeter;
+    var pinDepth = 20 * millimeter;
+
+    // T-handle dimensions
+    var handleWidth = 15 * millimeter;
+    var handleHeight = 8 * millimeter;
+
+    // Positioning the detent pins at the center of the desk (X = 230mm)
+    var cx = 230 * millimeter;
+    var cy = 0 * millimeter;
+
+    // Create the base pin body
+    fCuboid(context, id + "pinBody", {
+            "corner1" : vector(cx - (pinWidth / 2), cy - (pinHeight / 2), 0 * millimeter),
+            "corner2" : vector(cx + (pinWidth / 2), cy + (pinHeight / 2), pinDepth)
     });
 
-    // Sketch the detent pin profile
-    skLineSegment(baseSketch, "l1", { "start" : vector(0 * millimeter, 0 * millimeter), "end" : vector(pinWidth, 0 * millimeter) });
-    skLineSegment(baseSketch, "l2", { "start" : vector(pinWidth, 0 * millimeter), "end" : vector(pinWidth, pinHeight) });
-    skLineSegment(baseSketch, "l3", { "start" : vector(pinWidth, pinHeight), "end" : vector(0 * millimeter, pinHeight) });
-    skLineSegment(baseSketch, "l4", { "start" : vector(0 * millimeter, pinHeight), "end" : vector(0 * millimeter, 0 * millimeter) });
+    // Create a sketch for the T-handle cutout
+    var handleSketch = newSketchOnPlane(context, id + "handleSketch", {
+            "sketchPlane" : plane(vector(cx - (pinWidth / 2), cy - (pinHeight / 2), 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
+    });
 
-    // Add a T-handle cutout
-    skLineSegment(baseSketch, "cut1", { "start" : vector(0 * millimeter, pinHeight), "end" : vector(handleWidth, pinHeight) });
-    skLineSegment(baseSketch, "cut2", { "start" : vector(handleWidth, pinHeight), "end" : vector(handleWidth, pinHeight + handleHeight) });
-    skLineSegment(baseSketch, "cut3", { "start" : vector(handleWidth, pinHeight + handleHeight), "end" : vector(0 * millimeter, pinHeight + handleHeight) });
-    skLineSegment(baseSketch, "cut4", { "start" : vector(0 * millimeter, pinHeight + handleHeight), "end" : vector(0 * millimeter, pinHeight) });
+    // Sketch the T-handle cutout
+    skLineSegment(handleSketch, "cut1", { "start" : vector(0 * millimeter, pinHeight), "end" : vector(handleWidth, pinHeight) });
+    skLineSegment(handleSketch, "cut2", { "start" : vector(handleWidth, pinHeight), "end" : vector(handleWidth, pinHeight + handleHeight) });
+    skLineSegment(handleSketch, "cut3", { "start" : vector(handleWidth, pinHeight + handleHeight), "end" : vector(0 * millimeter, pinHeight + handleHeight) });
+    skLineSegment(handleSketch, "cut4", { "start" : vector(0 * millimeter, pinHeight + handleHeight), "end" : vector(0 * millimeter, pinHeight) });
 
-    skSolve(baseSketch);
+    skSolve(handleSketch);
 
-    // Extrude the base
-    opExtrude(context, id + "extBase", {
-            "entities" : qSketchRegion(id + "baseSketch"),
-            "direction" : vector(0, 0, 1),
+    // Extrude the T-handle cutout
+    opExtrude(context, id + "extHandleCut", {
+            "entities" : qSketchRegion(id + "handleSketch"),
+            "direction" : vector(1, 0, 0),
             "endBound" : BoundingType.BLIND,
-            "endDepth" : pinDepth
+            "endDepth" : pinWidth
     });
 
-    // Add a chamfer to the top edge
+    // Subtract the T-handle cutout from the pin body
+    opBoolean(context, id + "finalPinCut", {
+            "tools" : qUnion([
+                    qCreatedBy(id + "extHandleCut", EntityType.BODY)
+            ]),
+            "targets" : qCreatedBy(id + "pinBody", EntityType.BODY),
+            "operationType" : BooleanOperationType.SUBTRACTION
+    });
+
+    // Add a chamfer to the top edge of the pin body
     opChamfer(context, id + "chamferTop", {
-            "entities" : qEdge(id + "extBase", 1),
+            "entities" : qEdge(id + "pinBody", 1),
             "distance" : 1 * millimeter
     });
 }
