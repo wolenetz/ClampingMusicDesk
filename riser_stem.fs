@@ -1,8 +1,21 @@
 // Modular 2-Piece Riser Stem (Part 2A Extension + Part 2B Upper Head)
+FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
-import(path : "./utils.fs", version : "2411.0");
 
-function onStageRiserStem(context is Context, id is Id, definition is map)
+// Helper function to read variables from your Part Studio Variable Table
+function getVar(context is Context, name is string, defaultVal is ValueWithUnits) returns ValueWithUnits
+{
+    try silent
+    {
+        return getVariable(context, name);
+    }
+    catch
+    {
+        return defaultVal;
+    }
+}
+
+function onStageRiserStemImpl(context is Context, id is Id, definition is map)
 {
     var m4Clear = getVar(context, "m4_clear", 4.4 * millimeter);
     var m4Nut   = getVar(context, "m4_nut", 7.4 * millimeter);
@@ -211,3 +224,14 @@ function onStageRiserStem(context is Context, id is Id, definition is map)
             "operationType" : BooleanOperationType.SUBTRACTION
     });
 }
+
+// Export the feature so it appears in OnShape with proper annotations
+annotation { "Feature Type Name" : "OnStage Riser Stem" }
+export const onStageRiserStem = defineFeature(function(context is Context, id is Id, definition is map)
+    precondition
+    {
+    }
+    {
+        onStageRiserStemImpl(context, id, definition);
+    }
+);

@@ -1,8 +1,21 @@
 // Dual-Riser Lower Stationary Music Desk (Unified Side Profile & Tapered Spine)
+FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
-import(path : "./utils.fs", version : "2411.0");
 
-function onStageMusicDesk3ADual(context is Context, id is Id, definition is map)
+// Helper function to read variables from your Part Studio Variable Table
+function getVar(context is Context, name is string, defaultVal is ValueWithUnits) returns ValueWithUnits
+{
+    try silent
+    {
+        return getVariable(context, name);
+    }
+    catch
+    {
+        return defaultVal;
+    }
+}
+
+function onStageMusicDesk3ADualImpl(context is Context, id is Id, definition is map)
 {
     var tol        = getVar(context, "tol", 0.3 * millimeter);
     var deskAngle = getVar(context, "desk_angle", 15 * degree);
@@ -366,3 +379,14 @@ function onStageMusicDesk3ADual(context is Context, id is Id, definition is map)
         "operationType" : BooleanOperationType.SUBTRACTION
     });
 }
+
+// Export the feature so it appears in OnShape with proper annotations
+annotation { "Feature Type Name" : "OnStage Music Desk 3A Dual" }
+export const onStageMusicDesk3ADual = defineFeature(function(context is Context, id is Id, definition is map)
+    precondition
+    {
+    }
+    {
+        onStageMusicDesk3ADualImpl(context, id, definition);
+    }
+);

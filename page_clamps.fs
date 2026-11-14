@@ -1,8 +1,21 @@
 // Modular Page Clamps (Unified Side Profile & Tapered Spine)
+FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
-import(path : "./utils.fs", version : "2411.0");
 
-function onStagePageClamps(context is Context, id is Id, definition is map)
+// Helper function to read variables from your Part Studio Variable Table
+function getVar(context is Context, name is string, defaultVal is ValueWithUnits) returns ValueWithUnits
+{
+    try silent
+    {
+        return getVariable(context, name);
+    }
+    catch
+    {
+        return defaultVal;
+    }
+}
+
+function onStagePageClampsImpl(context is Context, id is Id, definition is map)
 {
     var tol        = getVar(context, "tol", 0.3 * millimeter);
     var m3Clear   = getVar(context, "m3_clear", 3.4 * millimeter);
@@ -96,3 +109,14 @@ function onStagePageClamps(context is Context, id is Id, definition is map)
             "operationType" : BooleanOperationType.SUBTRACTION
     });
 }
+
+// Export the feature so it appears in OnShape with proper annotations
+annotation { "Feature Type Name" : "OnStage Page Clamps" }
+export const onStagePageClamps = defineFeature(function(context is Context, id is Id, definition is map)
+    precondition
+    {
+    }
+    {
+        onStagePageClampsImpl(context, id, definition);
+    }
+);
