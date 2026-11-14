@@ -1,5 +1,5 @@
 // =========================================================================
-// PART 3B: Upper Sliding Music Desk (Rounded Plate Sides, Crisp Accessory Rail)
+// PART 3B: Upper Sliding Music Desk (Fixed 4-Point Trapezoid Dovetail Runners)
 // =========================================================================
 FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
@@ -33,15 +33,16 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map)
 
     var runnerBotZ = 0 * millimeter;   // Runners start right on the Z = 0 floor for easy viewing & slicing
     var headBotZ   = 130 * millimeter; // 130mm of exposed runner below the 60mm tall upper faceplate
-    var headH       = 60 * millimeter;
+    var headH      = 60 * millimeter;
     var headTopZ   = headBotZ + headH; // Total Part 3B height = 190mm
+    var runnerTopZ = headTopZ - (47 * millimeter); // 143mm
 
     var railXOffsets = [-75 * millimeter, 75 * millimeter];
 
     // 2. Upper Music Desk Plate (240mm wide x 6mm thick x 60mm tall, Z = 130mm to 190mm)
     fCuboid(context, id + "upperPlate", {
             "corner1" : vector(cx - halfW, cy - plateT, headBotZ),
-            "corner2" : vector(cx + halfW, cy,           headTopZ)
+            "corner2" : vector(cx + halfW, cy,          headTopZ)
     });
 
     // Round the 4 vertical (Z-parallel) side edges of the 6mm upper plate while pristine!
@@ -54,16 +55,18 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map)
         });
     }
 
-    // 3. Dual Male Dovetail Runners (At X = +/-75mm, extending from Z = 0mm to Z = 143mm)
+    // 3A. Dual Male 4-Point Trapezoid Dovetail Runners (At X = +/-75mm, Z = 0mm to 143mm)
+    // Matches Part 3A's exact 4-point trapezoid slot (which sits between Y = 4.55mm and Y = 14mm)
+    // with 0.25mm extra male clearance so it slides smoothly
     var maleSlideSk = newSketchOnPlane(context, id + "maleSlideSk", {
             "sketchPlane" : plane(vector(cx, cy, runnerBotZ), vector(0, 0, 1), vector(1, 0, 0))
     });
 
-    var mYBack  = guideDepth;     // +14mm
-    var mYNeck  = 5 * millimeter;  // +5mm
-    var mYFront = 0 * millimeter;  // 0mm (connects directly to the back of upperPlate from Z = 130 to 143mm!)
-    var mHNeck  = 6 * millimeter;  // 12mm total neck width at Y = +14mm
-    var mHWide  = 9 * millimeter;  // 18mm total flare width at Y = +5mm
+    var mFitTol = 0.25 * millimeter;            // Extra male clearance for smooth sliding in printed 3A
+    var mYBack  = guideDepth - mFitTol;         // +13.75mm (stays slightly inside the Y = 14mm rear face)
+    var mYFront = (5 * millimeter) + mFitTol;   // +5.25mm  (clears Part 3A's solid Y = 0..4.55mm front wall!)
+    var mHNeck  = (6 * millimeter) - mFitTol;   // 11.50mm total neck width at Y = +13.75mm (3A slot is ~12.37mm wide)
+    var mHWide  = (9 * millimeter) - mFitTol;   // 17.50mm total flare width at Y = +5.25mm (3A slot is ~18.42mm wide)
 
     var mIdx = 0;
     for (var rx in railXOffsets)
@@ -71,17 +74,13 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map)
         mIdx += 1;
         var mp1 = vector(rx - mHWide, mYFront);
         var mp2 = vector(rx + mHWide, mYFront);
-        var mp3 = vector(rx + mHWide, mYNeck);
-        var mp4 = vector(rx + mHNeck, mYBack);
-        var mp5 = vector(rx - mHNeck, mYBack);
-        var mp6 = vector(rx - mHWide, mYNeck);
+        var mp3 = vector(rx + mHNeck, mYBack);
+        var mp4 = vector(rx - mHNeck, mYBack);
 
-        skLineSegment(maleSlideSk, "ms1_" ~ mIdx, { "start" : mp1, "end" : mp2 });
-        skLineSegment(maleSlideSk, "ms2_" ~ mIdx, { "start" : mp2, "end" : mp3 });
-        skLineSegment(maleSlideSk, "ms3_" ~ mIdx, { "start" : mp3, "end" : mp4 });
-        skLineSegment(maleSlideSk, "ms4_" ~ mIdx, { "start" : mp4, "end" : mp5 });
-        skLineSegment(maleSlideSk, "ms5_" ~ mIdx, { "start" : mp5, "end" : mp6 });
-        skLineSegment(maleSlideSk, "ms6_" ~ mIdx, { "start" : mp6, "end" : mp1 });
+        skLineSegment(maleSlideSk, "msFront_" ~ mIdx, { "start" : mp1, "end" : mp2 });
+        skLineSegment(maleSlideSk, "msRight_" ~ mIdx, { "start" : mp2, "end" : mp3 });
+        skLineSegment(maleSlideSk, "msBack_"  ~ mIdx, { "start" : mp3, "end" : mp4 });
+        skLineSegment(maleSlideSk, "msLeft_"  ~ mIdx, { "start" : mp4, "end" : mp1 });
     }
     skSolve(maleSlideSk);
 
@@ -89,15 +88,29 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map)
             "entities" : qSketchRegion(id + "maleSlideSk"),
             "direction" : vector(0, 0, 1),
             "endBound" : BoundingType.BLIND,
-            "endDepth" : (headTopZ - 47 * millimeter) - runnerBotZ
+            "endDepth" : runnerTopZ - runnerBotZ
     });
+
+    // 3B. Upper Stand-Off Webs (Bridges Y = 0mm to Y = +6mm ONLY behind the Upper Plate from Z = 130mm to 143mm!)
+    // Connects the trapezoid runners solidly to the back of upperPlate while keeping Z = 0..130mm 100% clear!
+    var webBodies = [];
+    var wIdx = 0;
+    for (var rx in railXOffsets)
+    {
+        wIdx += 1;
+        fCuboid(context, id + ("runnerWeb" ~ wIdx), {
+                "corner1" : vector(cx + rx - mHWide, cy,                  headBotZ),
+                "corner2" : vector(cx + rx + mHWide, cy + 6 * millimeter, runnerTopZ)
+        });
+        webBodies = append(webBodies, qCreatedBy(id + ("runnerWeb" ~ wIdx), EntityType.BODY));
+    }
 
     // 4. Part 4 Horizontal Clamp Accessory Rail on Top Back of Part 3B (Z = 150mm to 178mm)
     // Inset by 3mm on Left & Right ends (X = cx - 117mm to cx + 117mm) so the rail ends sit cleanly
     // inside the 2.8mm rounded vertical back edge of upperPlate without overhanging in mid-air!
-    var railInset  = 3 * millimeter;
+    var railInset = 3 * millimeter;
     var railBaseZ = headTopZ - (40 * millimeter);
-    var railSketch  = newSketchOnPlane(context, id + "railSketch", {
+    var railSketch = newSketchOnPlane(context, id + "railSketch", {
             "sketchPlane" : plane(vector(cx - halfW + railInset, cy, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
     });
     var u1 = vector(0 * millimeter,  railBaseZ + 4 * millimeter);
@@ -128,11 +141,14 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map)
 
     // Union all Part 3B Upper Extension components into a single solid body
     opBoolean(context, id + "unionUpperDesk", {
-            "tools" : qUnion([
-                    qCreatedBy(id + "upperPlate", EntityType.BODY),
-                    qCreatedBy(id + "extMaleRunners", EntityType.BODY),
-                    qCreatedBy(id + "extUpperRail", EntityType.BODY)
-            ]),
+            "tools" : qUnion(concatenateArrays([
+                    [
+                        qCreatedBy(id + "upperPlate", EntityType.BODY),
+                        qCreatedBy(id + "extMaleRunners", EntityType.BODY),
+                        qCreatedBy(id + "extUpperRail", EntityType.BODY)
+                    ],
+                    webBodies
+            ])),
             "operationType" : BooleanOperationType.UNION
     });
 
@@ -147,7 +163,7 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map)
             var holeZ = runnerBotZ + (110 * millimeter) - (k * 15 * millimeter);
 
             fCylinder(context, id + ("runnerDetent" ~ hIdx), {
-                        "bottomCenter" : vector(cx + rx - 12 * millimeter, cy + 9.5 * millimeter, holeZ),
+                    "bottomCenter" : vector(cx + rx - 12 * millimeter, cy + 9.5 * millimeter, holeZ),
                     "topCenter"    : vector(cx + rx + 12 * millimeter, cy + 9.5 * millimeter, holeZ),
                     "radius"       : m3Clear / 2
             });
