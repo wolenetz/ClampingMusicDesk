@@ -1,4 +1,6 @@
-// Flat-Bed Printable T-Handle Detent Pin (Part 5) - Unified Implementation
+// =========================================================================
+// PART 5: Flat-Bed Printable T-Handle Detent Pin
+// =========================================================================
 FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
 
@@ -17,66 +19,106 @@ function getVar(context is Context, name is string, defaultVal is ValueWithUnits
 
 function onStageDetentPinsImpl(context is Context, id is Id, definition is map)
 {
-    var tol        = getVar(context, "tol", 0.3 * millimeter);
-    var m3Clear   = getVar(context, "m3_clear", 3.4 * millimeter);
+   
+        var m3Clear = getVar(context, "m3_clear", 3.4 * millimeter);
+        var tol      = getVar(context, "tol", 0.3 * millimeter);
 
-    // Detent pin dimensions
-    var pinWidth = 8 * millimeter;
-    var pinHeight = 12 * millimeter;
-    var pinDepth = 20 * millimeter;
+        // Pin diameter is sized 0.35mm smaller than the 3.4mm hole (approx 3.05mm) for an easy, non-binding slip fit
+        var pinRad  = (m3Clear - tol - 0.05 * millimeter) / 2;
+        
+        // Flattening the top and bottom (2.4mm height) creates a D-profile / double-flat shaft:
+        // 1. It prints completely flat on the build plate with zero supports and zero bed-adhesion issues!
+        // 2. Continuous perimeter wall loops run the entire 38mm length of the shaft for maximum shear strength!
+        var flatH     = 2.4 * millimeter; 
+        var shaftLen  = 38 * millimeter; // Passes cleanly through the 32mm wide guide block in double-shear
 
-    // T-handle dimensions
-    var handleWidth = 15 * millimeter;
-    var handleHeight = 8 * millimeter;
+        var xBase = 825 * millimeter;
+        var yOffsets = [0 * millimeter];
 
-    // Positioning the detent pins at the center of the desk (X = 230mm)
-    var cx = 230 * millimeter;
-    var cy = 0 * millimeter;
+        var idx = 0;
+        for (var yOff in yOffsets)
+        {
+            idx += 1;
 
-    // Create the base pin body
-    fCuboid(context, id + "pinBody", {
-            "corner1" : vector(cx - (pinWidth / 2), cy - (pinHeight / 2), 0 * millimeter),
-            "corner2" : vector(cx + (pinWidth / 2), cy + (pinHeight / 2), pinDepth)
+            // 1. Round Pin Shaft along X-axis (X = 825mm to 863mm)
+            fCylinder(context, id + ("shaftCyl" ~ idx), {
+                    "bottomCenter" : vector(xBase, yOff, 0 * millimeter),
+                    "topCenter"    : vector(xBase + shaftLen, yOff, 0 * millimeter),
+                    "radius"       : pinRad
+            });
+
+            // 2. Bounding Box to Flatten Top & Bottom of Shaft (Z = -1.2mm to +1.2mm) & Bevel Tip
+            var boundSk = newSketchOnPlane(context, id + ("boundSk" ~ idx), {
+                    "sketchPlane" : plane(vector(xBase, yOff - 10 * millimeter, 0 * millimeter), vector(0, -1, 0), vector(1, 0, 0))
+            });
+            var hZ = flatH / 2; // 1.2mm
+            var b1 = vector(0 * millimeter,               -hZ);
+            var b2 = vector(shaftLen - 1.5 * millimeter, -hZ);
+            var b3 = vector(shaftLen,                    -0.5 * millimeter); // Tapered lead-in tip
+            var b4 = vector(shaftLen,                     0.5 * millimeter);
+            var b5 = vector(shaftLen - 1.5 * millimeter,  hZ);
+            var b6 = vector(0 * millimeter,                hZ);
+
+            skLineSegment(boundSk, "bL1" ~ idx, { "start" : b1, "end" : b2 });
+            skLineSegment(boundSk, "bL2" ~ idx, { "start" : b2, "end" : b3 });
+            skLineSegment(boundSk, "bL3" ~ idx, { "start" : b3, "end" : b4 });
+            skLineSegment(boundSk, "bL4" ~ idx, { "start" : b4, "end" : b5 });
+            skLineSegment(boundSk, "bL5" ~ idx, { "start" : b5, "end" : b6 });
+            skLineSegment(boundSk, "bL6" ~ idx, { "start" : b6, "end" : b1 });
+            skSolve(boundSk);
+
+            opExtrude(context, id + ("extBound" ~ idx), {
+                    "entities" : qSketchRegion(id + ("boundSk" ~ idx)),
+                    "direction" : vector(0, 1, 0),
+                    "endBound" : BoundingType.BLIND,
+                    "endDepth" : 20 * millimeter
+            });
+
+            // Intersect Cylinder and Flat-Top/Tip-Beveled Box to create the print-flat shaft
+            opBoolean(context, id + ("flatShaft" ~ idx), {
+                    "tools" : qUnion([
+                            qCreatedBy(id + ("shaftCyl" ~ idx), EntityType.BODY),
+                            qCreatedBy(id + ("extBound" ~ idx), EntityType.BODY)
+                    ]),
+                    "operationType" : BooleanOperationType.INTERSECTION
+            });
+
+            // 3. Ergonomic T-Handle Grip (14mm long x 18mm wide x 2.4mm thick, flush with top/bottom of shaft!)
+            fCuboid(context, id + ("tHandle" ~ idx), {
+                    "corner1" : vector(xBase - 14 * millimeter, yOff - 9 * millimeter, -hZ),
+                    "corner2" : vector(xBase,                   yOff + 9 * millimeter,  hZ)
+            });
+
+            // 4. Collar Stop Shoulder (6mm wide x 4mm long) so the pin seats cleanly against the guide block wall
+            fCuboid(context, id + ("collar" ~ idx), {
+                    "corner1" : vector(xBase,                yOff - 3 * millimeter, -hZ),
+                    "corner2" : vector(xBase + 3 * millimeter, yOff + 3 * millimeter,  hZ)
+            });
+
+            opBoolean(context, id + ("unionPin" ~ idx), {
+                    "tools" : qUnion([
+                            qCreatedBy(id + ("flatShaft" ~ idx), EntityType.BODY),
+                            qCreatedBy(id + ("tHandle" ~ idx), EntityType.BODY),
+                            qCreatedBy(id + ("collar" ~ idx), EntityType.BODY)
+                    ]),
+                    "operationType" : BooleanOperationType.UNION
+            });
+
+            // 5. Finger Pull-Hole / Lanyard Loop in the T-Handle (7mm diameter)
+            fCylinder(context, id + ("pullHole" ~ idx), {
+                    "bottomCenter" : vector(xBase - 7 * millimeter, yOff, -5 * millimeter),
+                    "topCenter"    : vector(xBase - 7 * millimeter, yOff,  5 * millimeter),
+                    "radius"       : 3.5 * millimeter
+            });
+
+            opBoolean(context, id + ("subPull" ~ idx), {
+                    "tools" : qCreatedBy(id + ("pullHole" ~ idx), EntityType.BODY),
+                    "targets" : qCreatedBy(id + ("flatShaft" ~ idx), EntityType.BODY),
+                    "operationType" : BooleanOperationType.SUBTRACTION
+            });
+        }
     });
 
-    // Create a sketch for the T-handle cutout
-    var handleSketch = newSketchOnPlane(context, id + "handleSketch", {
-            "sketchPlane" : plane(vector(cx - (pinWidth / 2), cy - (pinHeight / 2), 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
-    });
-
-    // Sketch the T-handle cutout
-    skLineSegment(handleSketch, "cut1", { "start" : vector(0 * millimeter, pinHeight), "end" : vector(handleWidth, pinHeight) });
-    skLineSegment(handleSketch, "cut2", { "start" : vector(handleWidth, pinHeight), "end" : vector(handleWidth, pinHeight + handleHeight) });
-    skLineSegment(handleSketch, "cut3", { "start" : vector(handleWidth, pinHeight + handleHeight), "end" : vector(0 * millimeter, pinHeight + handleHeight) });
-    skLineSegment(handleSketch, "cut4", { "start" : vector(0 * millimeter, pinHeight + handleHeight), "end" : vector(0 * millimeter, pinHeight) });
-
-    skSolve(handleSketch);
-
-    // Extrude the T-handle cutout
-    opExtrude(context, id + "extHandleCut", {
-            "entities" : qSketchRegion(id + "handleSketch"),
-            "direction" : vector(1, 0, 0),
-            "endBound" : BoundingType.BLIND,
-            "endDepth" : pinWidth
-    });
-
-    // Subtract the T-handle cutout from the pin body
-    opBoolean(context, id + "finalPinCut", {
-            "tools" : qUnion([
-                    qCreatedBy(id + "extHandleCut", EntityType.BODY)
-            ]),
-            "targets" : qCreatedBy(id + "pinBody", EntityType.BODY),
-            "operationType" : BooleanOperationType.SUBTRACTION
-    });
-
-    // Add a chamfer to the top edge of the pin body
-    opChamfer(context, id + "chamferTop", {
-            "entities" : qEdge(id + "pinBody", 1),
-            "distance" : 1 * millimeter
-    });
-}
-
-// Export the feature so it appears in OnShape with proper annotations
 annotation { "Feature Type Name" : "OnStage Detent Pins" }
 export const onStageDetentPins = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
