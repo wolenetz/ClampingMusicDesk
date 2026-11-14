@@ -1,4 +1,6 @@
-// Test Fit Dovetail Receiver - Unified Implementation
+// =========================================================================
+// TEST FIT: Mega-Dovetail Receiver Block
+// =========================================================================
 FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
 
@@ -15,87 +17,75 @@ function getVar(context is Context, name is string, defaultVal is ValueWithUnits
     }
 }
 
-// Helper function to cut the matching Upper Dovetail Rail profile + tolerance
-function makeRailCutout(context is Context, id is Id, xStart is ValueWithUnits, width is ValueWithUnits, tol is ValueWithUnits) returns Query
-{
-    var rSketch = newSketchOnPlane(context, id + "rSketch", {
-            "sketchPlane" : plane(vector(xStart - 1 * millimeter, 0 * millimeter, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
-    });
-
-    // Matches Part 3's extUpperRail (Y = 0 to 14mm, Z = 140 to 168mm) expanded by tol
-    var u1 = vector(-1 * millimeter,        144 * millimeter - tol);
-    var u2 = vector( 6 * millimeter - tol,  144 * millimeter - tol);
-    var u3 = vector( 6 * millimeter - tol,  140 * millimeter - tol);
-    var u4 = vector(14 * millimeter + tol,  144 * millimeter - tol);
-    var u5 = vector(14 * millimeter + tol,  164 * millimeter + tol);
-    var u6 = vector( 6 * millimeter - tol,  168 * millimeter + tol);
-    var u7 = vector( 6 * millimeter - tol,  164 * millimeter + tol);
-    var u8 = vector(-1 * millimeter,        164 * millimeter + tol);
-
-    skLineSegment(rSketch, "rL1", { "start" : u1, "end" : u2 });
-    skLineSegment(rSketch, "rL2", { "start" : u2, "end" : u3 });
-    skLineSegment(rSketch, "rL3", { "start" : u3, "end" : u4 });
-    skLineSegment(rSketch, "rL4", { "start" : u4, "end" : u5 });
-    skLineSegment(rSketch, "rL5", { "start" : u5, "end" : u6 });
-    skLineSegment(rSketch, "rL6", { "start" : u6, "end" : u7 });
-    skLineSegment(rSketch, "rL7", { "start" : u7, "end" : u8 });
-    skLineSegment(rSketch, "rL8", { "start" : u8, "end" : u1 });
-    skSolve(rSketch);
-
-    opExtrude(context, id + "extRailCut", {
-            "entities" : qSketchRegion(id + "rSketch"),
-            "direction" : vector(1, 0, 0),
-            "endBound" : BoundingType.BLIND,
-            "endDepth" : width + 2 * millimeter
-    });
-
-    return qCreatedBy(id + "extRailCut", EntityType.BODY);
-}
 
 function testFitReceiverImpl(context is Context, id is Id, definition is map)
 {
     var tol        = getVar(context, "tol", 0.3 * millimeter);
-    var m3Clear   = getVar(context, "m3_clear", 3.4 * millimeter);
-
-    // Test fit receiver dimensions
-    var receiverWidth = 20 * millimeter;
-    var receiverHeight = 14 * millimeter;
-    var receiverDepth = 15 * millimeter;
-
-    // Positioning the test fit receiver at the center of the desk (X = 230mm)
-    var cx = 230 * millimeter;
+    var deskAngle = getVar(context, "desk_angle", 15 * degree);
+    
+    var cx = -150 * millimeter;
     var cy = 0 * millimeter;
 
-    // Create base sketch
-    var baseSketch = newSketchOnPlane(context, id + "baseSketch", {
-            "sketchPlane" : plane(vector(cx - (receiverWidth / 2), cy - (receiverHeight / 2), 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
+    var recHalfW = 32 * millimeter; // 64mm total width
+    var recHeight = 95 * millimeter; // 95mm tall housing
+    var baseDepth = 26 * millimeter + (recHeight * sin(deskAngle));
+
+    // 1. Build the Solid Angled Housing Block
+    var wedgeSketch = newSketchOnPlane(context, id + "wedgeSketch", {
+            "sketchPlane" : plane(vector(cx - recHalfW, cy, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
     });
+    var w1 = vector(0 * millimeter, 0 * millimeter);
+    var w2 = vector(baseDepth,     0 * millimeter);
+    var w3 = vector(baseDepth - (recHeight * sin(deskAngle)), recHeight * cos(deskAngle));
+    var w4 = vector(0 * millimeter, recHeight * cos(deskAngle));
 
-    // Sketch the receiver profile
-    skLineSegment(baseSketch, "l1", { "start" : vector(0 * millimeter, 0 * millimeter), "end" : vector(receiverWidth, 0 * millimeter) });
-    skLineSegment(baseSketch, "l2", { "start" : vector(receiverWidth, 0 * millimeter), "end" : vector(receiverWidth, receiverHeight) });
-    skLineSegment(baseSketch, "l3", { "start" : vector(receiverWidth, receiverHeight), "end" : vector(0 * millimeter, receiverHeight) });
-    skLineSegment(baseSketch, "l4", { "start" : vector(0 * millimeter, receiverHeight), "end" : vector(0 * millimeter, 0 * millimeter) });
+    skLineSegment(wedgeSketch, "wBot",   { "start" : w1, "end" : w2 });
+    skLineSegment(wedgeSketch, "wBack",  { "start" : w2, "end" : w3 });
+    skLineSegment(wedgeSketch, "wTop",   { "start" : w3, "end" : w4 });
+    skLineSegment(wedgeSketch, "wFront", { "start" : w4, "end" : w1 });
+    skSolve(wedgeSketch);
 
-    skSsolve(baseSketch);
-
-    // Extrude the base
-    opExtrude(context, id + "extBase", {
-            "entities" : qSketchRegion(id + "baseSketch"),
-            "direction" : vector(0, 0, 1),
+    opExtrude(context, id + "extReceiver", {
+            "entities" : qSketchRegion(id + "wedgeSketch"),
+            "direction" : vector(1, 0, 0),
             "endBound" : BoundingType.BLIND,
-            "endDepth" : receiverDepth
+            "endDepth" : recHalfW * 2
     });
 
-    // Add a chamfer to the top edge
-    opChamfer(context, id + "chamferTop", {
-            "entities" : qEdge(id + "extBase", 1),
-            "distance" : 1 * millimeter
+    // 2. Cut the Female Mega-Dovetail Slot + Tolerance
+    var uSlide = vector(0, -sin(deskAngle), cos(deskAngle));
+    var cornerOrigin = vector(cx, cy + baseDepth, 0 * millimeter) - (8 * millimeter) * uSlide;
+
+    var doveCutSketch = newSketchOnPlane(context, id + "doveCutSketch", {
+            "sketchPlane" : plane(cornerOrigin, uSlide, vector(1, 0, 0))
+    });
+
+    var dOuter   = 2 * millimeter;
+    var dInner   = -(18 * millimeter) - tol;
+    var halfNeck = (13.0 * millimeter) + tol;
+    var halfWide = (19.0 * millimeter) + tol;
+
+    skLineSegment(doveCutSketch, "dBack",  { "start" : vector(-halfNeck, dOuter), "end" : vector( halfNeck, dOuter) });
+    skLineSegment(doveCutSketch, "dRight", { "start" : vector( halfNeck, dOuter), "end" : vector( halfWide, dInner) });
+    skLineSegment(doveCutSketch, "dFront", { "start" : vector( halfWide, dInner), "end" : vector(-halfWide, dInner) });
+    skLineSegment(doveCutSketch, "dLeft",  { "start" : vector(-halfWide, dInner), "end" : vector(-halfNeck, dOuter) });
+    skSolve(doveCutSketch);
+
+    opExtrude(context, id + "extDoveCut", {
+            "entities" : qSketchRegion(id + "doveCutSketch"),
+            "direction" : uSlide,
+            "endBound" : BoundingType.BLIND,
+            "endDepth" : 79 * millimeter
+    });
+
+    opBoolean(context, id + "finalTestCut", {
+            "tools" : qCreatedBy(id + "extDoveCut", EntityType.BODY),
+            "targets" : qCreatedBy(id + "extReceiver", EntityType.BODY),
+            "operationType" : BooleanOperationType.SUBTRACTION
     });
 }
 
-// Export the feature so it appears in OnShape with proper annotations
-annotation { "Feature Type Name" : "Test Fit Receiver" }
+annotation { "Feature Type Name" : "Test Fit Dovetail Receiver" }
 export const testFitReceiver = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
