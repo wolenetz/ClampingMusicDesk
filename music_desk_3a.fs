@@ -1,4 +1,6 @@
-// Lower Stationary Music Desk (Unified Side Profile & Tapered Spine)
+// =========================================================================
+// PART 3A: Lower Stationary Music Desk (Unified Side Profile & Tapered Spine)
+// =========================================================================
 FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
 
@@ -237,8 +239,7 @@ function onStageMusicDesk3AImpl(context is Context, id is Id, definition is map)
     });
 }
 
-// Export the feature so it appears in OnShape with proper annotations
-annotation { "Feature Type Name" : "OnStage Music Desk 3A" }
+annotation { "Feature Type Name" : "OnStage Music Desk 3A (Single Riser)" }
 export const onStageMusicDesk3A = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
