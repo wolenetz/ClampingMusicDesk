@@ -1,4 +1,6 @@
-// Modular Page Clamps (Unified Side Profile & Tapered Spine) - Full Implementation
+// =========================================================================
+// PART 4: Modular Page Clamps (3 Variants for the Upper Back Dovetail Rail)
+// =========================================================================
 FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
 
@@ -276,7 +278,6 @@ function onStagePageClampsImpl(context is Context, id is Id, definition is map)
             "operationType" : BooleanOperationType.SUBTRACTION
     });
 
-
     // =====================================================================
     // VARIANT C: Thick & Short/Tall Book Deep-Reach S-Spring (X = 495mm)
     // =====================================================================
@@ -329,7 +330,6 @@ function onStagePageClampsImpl(context is Context, id is Id, definition is map)
     });
 }
 
-// Export the feature so it appears in OnShape with proper annotations
 annotation { "Feature Type Name" : "OnStage Page Clamps" }
 export const onStagePageClamps = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
