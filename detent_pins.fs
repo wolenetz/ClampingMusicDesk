@@ -1,8 +1,21 @@
 // Flat-Bed Printable T-Handle Detent Pin (Part 5) - Unified Implementation
+FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
-import(path : "./utils.fs", version : "2411.0");
 
-function onStageDetentPins(context is Context, id is Id, definition is map)
+// Helper function to read variables from your Part Studio Variable Table
+function getVar(context is Context, name is string, defaultVal is ValueWithUnits) returns ValueWithUnits
+{
+    try silent
+    {
+        return getVariable(context, name);
+    }
+    catch
+    {
+        return defaultVal;
+    }
+}
+
+function onStageDetentPinsImpl(context is Context, id is Id, definition is map)
 {
     var tol        = getVar(context, "tol", 0.3 * millimeter);
     var m3Clear   = getVar(context, "m3_clear", 3.4 * millimeter);
@@ -62,3 +75,14 @@ function onStageDetentPins(context is Context, id is Id, definition is map)
             "distance" : 1 * millimeter
     });
 }
+
+// Export the feature so it appears in OnShape with proper annotations
+annotation { "Feature Type Name" : "OnStage Detent Pins" }
+export const onStageDetentPins = defineFeature(function(context is Context, id is Id, definition is map)
+    precondition
+    {
+    }
+    {
+        onStageDetentPinsImpl(context, id, definition);
+    }
+);
