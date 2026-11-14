@@ -17,7 +17,7 @@ function getVar(context is Context, name is string, defaultVal is ValueWithUnits
     }
 }
 
-function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map)
+function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map, partName is string)
 {
     // 1. Pull variables from your Variable Table
     var m3Clear = getVar(context, "m3_clear", 3.4 * millimeter);
@@ -178,6 +178,13 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map)
             "targets" : qCreatedBy(id + "upperPlate", EntityType.BODY),
             "operationType" : BooleanOperationType.SUBTRACTION
     });
+
+    // Name it for easier export.
+    setProperty(context, {
+        "entities" : qCreatedBy(id + "upperPlate", EntityType.BODY),
+        "propertyType" : PropertyType.NAME,
+        "value" : partName
+    });
 }
 
 annotation { "Feature Type Name" : "OnStage Music Desk 3B (Upper)" }
@@ -186,6 +193,6 @@ export const onStageMusicDesk3B = defineFeature(function(context is Context, id 
     {
     }
     {
-        onStageMusicDesk3BImpl(context, id, definition);
+        onStageMusicDesk3BImpl(context, id, definition, "Part 3B - Upper Sliding Music Desk");
     }
 );
