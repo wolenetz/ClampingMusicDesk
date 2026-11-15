@@ -112,6 +112,13 @@ function onStagePageClampsImpl(context is Context, id is Id, definition is map)
             "operationType" : BooleanOperationType.SUBTRACTION
     });
 
+    // Name it for easier export.
+    setProperty(context, {
+        "entities" : qCreatedBy(id + "extA", EntityType.BODY),
+        "propertyType" : PropertyType.NAME,
+        "value" : "Part 4A-Thin Sheet Swan Neck Leaf Spring - Page Clamp"
+    });
+
     // =====================================================================
     // VARIANT B: Medium Book Flip-UP Circular Knuckle Hinge (X = 695mm & 735mm)
     // =====================================================================
@@ -186,6 +193,13 @@ function onStagePageClampsImpl(context is Context, id is Id, definition is map)
             ]),
             "targets" : qCreatedBy(id + "extB1", EntityType.BODY),
             "operationType" : BooleanOperationType.SUBTRACTION
+    });
+
+    // Name it for easier export.
+    setProperty(context, {
+        "entities" : qCreatedBy(id + "extB1", EntityType.BODY),
+        "propertyType" : PropertyType.NAME,
+        "value" : "Part 4B1-Medium Book Flip Up Circular Knuckle Hinge - Page Clamp"
     });
 
     // =====================================================================
@@ -278,6 +292,13 @@ function onStagePageClampsImpl(context is Context, id is Id, definition is map)
             "operationType" : BooleanOperationType.SUBTRACTION
     });
 
+    // Name it for easier export.
+    setProperty(context, {
+        "entities" : qCreatedBy(id + "b2EarCylL", EntityType.BODY),
+        "propertyType" : PropertyType.NAME,
+        "value" : "Part 4B2-Medium Book Circular Knuckle Clevis Batwing Finger - Page Clamp"
+    });
+
     // =====================================================================
     // VARIANT C: Thick & Short/Tall Book Deep-Reach S-Spring (X = 495mm)
     // =====================================================================
@@ -328,6 +349,14 @@ function onStagePageClampsImpl(context is Context, id is Id, definition is map)
             "targets" : qCreatedBy(id + "extC", EntityType.BODY),
             "operationType" : BooleanOperationType.SUBTRACTION
     });
+
+    // Name it for easier export.
+    setProperty(context, {
+        "entities" : qCreatedBy(id + "extC", EntityType.BODY),
+        "propertyType" : PropertyType.NAME,
+        "value" : "Part 4C-Thick Book Deep Reach S Spring - Page Clamp"
+    });
+
 }
 
 annotation { "Feature Type Name" : "OnStage Page Clamps" }
