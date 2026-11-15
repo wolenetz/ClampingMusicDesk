@@ -47,8 +47,8 @@ These tools were used during development of this specific repository. Users are 
 ### Installation
 1. **Clone the repo**:
    ```bash
-   git clone https://github.com/wolenetz/ClampingMusicStand.git
-   cd ClampingMusicStand
+   git clone https://github.com/wolenetz/ClampingMusicDesk.git
+   cd ClampingMusicDesk
    ```
 2. **Open in VS Code** and ensure the Continue extension is enabled.
 3. **Open the OnShape project** in your OnShape account and link the `OnShapeFeatureScript.fs` file.
