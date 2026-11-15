@@ -1,3 +1,6 @@
+NOTE: I'm pausing to reflect on whether or not I want to continue down the road of cloud-native CAD automation. I'm
+considering alternatives to do this local-native in tools I haven't used before, to avoid API usage limits/metering/etc.
+
 # **Clamping Music Desk for OnStage Keyboard Stand**
 
 ## 1. Project Overview
