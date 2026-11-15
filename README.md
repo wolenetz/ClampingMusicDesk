@@ -4,7 +4,7 @@
 
 A 3‑D‑printed music desk that can be assembled in multiple configurations (single‑riser, dual‑riser, full/low‑profile, extra‑tall) to hold sheet music or books. It attaches to an "OnStage" brand keyboard stand, which also happens to be holding my Roland Fantom‑G8.  The music desk is built from OnShape FeatureScript geometry, exported as STL, sliced with OrcaSlicer, and printed on a Prusa CORE One.  The repository contains:
 
-- `OnShapeFeatureScript.fs` – FeatureScript that generates the parts.
+- `src/fs/` – Directory containing multiple FeatureScript files that generate the parts.
 - `PrintingGuide.md` – detailed print‑and‑assembly instructions.
 
 This project is specifically designed for use with the Roland Fantom-G8 keyboard, but can be adapted for other keyboards and music stands.
@@ -29,7 +29,7 @@ These tools were used during development of this specific repository. Users are 
 ### High‑Level Architecture
 ```
 ┌───────────────────────────────────────────────────────────────────────────────────────┐
-│  OnShapeFeatureScript.fs  →  OnShape  →  Export to STL  →  OrcaSlicer  →  Print       │
+│  src/fs/*.fs  →  OnShape  →  Export to STL  →  OrcaSlicer  →  Print                   │
 └───────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -64,7 +64,7 @@ npm install -g onshape-cli
 # Run tests
 onshape test run
 ```
-Ensure the `OnShapeFeatureScript.fs` file is in the current working directory.
+Ensure the `src/fs/` directory containing the .fs files is in the current working directory.
 
 ## 3. Project Structure
 
@@ -72,13 +72,20 @@ Ensure the `OnShapeFeatureScript.fs` file is in the current working directory.
 ├── .continue/          # Continue workspace
 │   └── rules/
 │       └── CONTINUE.md
-├── PrintingGuide.md            # Print & assembly guide
-├── OnShapeFeatureScript.fs  # FeatureScript source
+├── PrintingGuide.md    # Print & assembly guide
+├── src/fs/             # FeatureScript sources
+│   ├── l_clamp.fs           # L-Clamp parts
+│   ├── riser_stem.fs        # Riser stem parts  
+│   ├── music_desk_3a_single.fs  # Single riser lower desk
+│   ├── music_desk_3a_dual.fs    # Dual riser lower desk
+│   ├── music_desk_3b.fs         # Upper sliding desk
+│   ├── page_clamps.fs           # Page clamp parts
+│   └── detent_pin.fs            # Detent pin
 └── .git/                # Git metadata
 ```
 
 ### Key Files
-- **`OnShapeFeatureScript.fs`** – Parametric geometry for the stand.  The script defines parameters such as `part`, `material`, and `orientation`.
+- **`src/fs/*.fs`** – Parametric geometry for the stand. The scripts define parameters such as `part`, `material`, and `orientation`.
 - **`PrintingGuide.md`** – Human‑readable instructions for printing and assembling the stand.
 - **`.continue/rules/CONTINUE.md`** – AI‑friendly guide for developers.
 
@@ -87,7 +94,7 @@ Ensure the `OnShapeFeatureScript.fs` file is in the current working directory.
 | Step | Description | Tools |
 |------|-------------|-------|
 | **Branch** | Create a feature branch from `main` | Git |
-| **Code** | Edit `OnShapeFeatureScript.fs` | VS Code + Continue |
+| **Code** | Edit files in `src/fs/` | VS Code + Continue |
 | **Test** | Run FeatureScript unit tests | OnShape CLI |
 | **Export** | Generate STL files from OnShape | OnShape UI |
 | **Slice** | Load STL into OrcaSlicer | OrcaSlicer |
@@ -125,7 +132,7 @@ Ensure the `OnShapeFeatureScript.fs` file is in the current working directory.
 ## 6. Common Tasks
 
 ### Adding a New Part
-1. Define a new function in `OnShapeFeatureScript.fs`.
+1. Define a new function in `src/fs/*.fs`.
 2. Add a `params` entry for the part name.
 3. Export the part from OnShape and add it to the slicer.
 4. Update the PrintingGuide.md with orientation and support guidance.
