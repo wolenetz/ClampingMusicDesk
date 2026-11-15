@@ -17,8 +17,7 @@ function getVar(context is Context, name is string, defaultVal is ValueWithUnits
     }
 }
 
-
-function testFitReceiverImpl(context is Context, id is Id, definition is map)
+function testFitReceiverImpl(context is Context, id is Id, definition is map, partName is string)
 {
     var tol        = getVar(context, "tol", 0.3 * millimeter);
     var deskAngle = getVar(context, "desk_angle", 15 * degree);
@@ -83,6 +82,13 @@ function testFitReceiverImpl(context is Context, id is Id, definition is map)
             "targets" : qCreatedBy(id + "extReceiver", EntityType.BODY),
             "operationType" : BooleanOperationType.SUBTRACTION
     });
+
+    // Name it for easier export.
+    setProperty(context, {
+        "entities" : qCreatedBy(id + "extReceiver", EntityType.BODY),
+        "propertyType" : PropertyType.NAME,
+        "value" : partName
+    });
 }
 
 annotation { "Feature Type Name" : "Test Fit Dovetail Receiver" }
@@ -91,6 +97,6 @@ export const testFitReceiver = defineFeature(function(context is Context, id is 
     {
     }
     {
-        testFitReceiverImpl(context, id, definition);
+        testFitReceiverImpl(context, id, definition, "TEST FIT - Dovetail Receiver");
     }
 );
