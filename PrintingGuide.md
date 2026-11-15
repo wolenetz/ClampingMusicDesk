@@ -1,4 +1,4 @@
-# OnStage Sheet Music Stand for Roland Fantom-G8
+# Clamping Music Desk for OnStage Keyboard Stand
 **OrcaSlicer & Prusa CORE One Print Guide**
 
 ---
