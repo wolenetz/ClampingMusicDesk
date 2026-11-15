@@ -17,7 +17,7 @@ function getVar(context is Context, name is string, defaultVal is ValueWithUnits
     }
 }
 
-function onStageMusicDesk3AImpl(context is Context, id is Id, definition is map)
+function onStageMusicDesk3AImpl(context is Context, id is Id, definition is map, partName is string)
 {
     var tol        = getVar(context, "tol", 0.3 * millimeter);
     var deskAngle = getVar(context, "desk_angle", 15 * degree);
@@ -237,6 +237,13 @@ function onStageMusicDesk3AImpl(context is Context, id is Id, definition is map)
         "targets" : shellBody,
         "operationType" : BooleanOperationType.SUBTRACTION
     });
+
+    // Name it for easier export.
+    setProperty(context, {
+        "entities" : shellBody,
+        "propertyType" : PropertyType.NAME,
+        "value" : partName
+    });
 }
 
 annotation { "Feature Type Name" : "OnStage Music Desk 3A (Single Riser)" }
@@ -245,6 +252,6 @@ export const onStageMusicDesk3A = defineFeature(function(context is Context, id 
     {
     }
     {
-        onStageMusicDesk3AImpl(context, id, definition);
+        onStageMusicDesk3AImpl(context, id, definition, "Part 3A-Single - Single Riser Lower Music Desk");
     }
 );
