@@ -312,6 +312,21 @@ function onStageLClampImpl(context is Context, id is Id, definition is map)
             "targets" : qCreatedBy(id + "clampBlock", EntityType.BODY),
             "operationType" : BooleanOperationType.SUBTRACTION
     });
+
+    // 9. Name Part 1A and Part 1B distinctly in the Onshape Parts list
+    var clampBodies = qCreatedBy(id + "clampBlock", EntityType.BODY);
+
+    setProperty(context, {
+            "entities" : qContainsPoint(clampBodies, vector(0 * millimeter, 0 * millimeter, topZ)),
+            "propertyType" : PropertyType.NAME,
+            "value" : "Part 1A - OnStage L Clamp Top Saddle Cap and Spine"
+    });
+
+    setProperty(context, {
+            "entities" : qContainsPoint(clampBodies, vector(0 * millimeter, 0 * millimeter, botZ)),
+            "propertyType" : PropertyType.NAME,
+            "value" : "Part 1B - OnStage L Clamp Lower Cradle and Arm"
+    });
 }
 
 annotation { "Feature Type Name" : "OnStage L-Clamp" }
