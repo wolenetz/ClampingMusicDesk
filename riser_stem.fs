@@ -130,6 +130,12 @@ function onStageRiserStemImpl(context is Context, id is Id, definition is map)
             "operationType" : BooleanOperationType.SUBTRACTION
     });
 
+    // Name it for easier export.
+    setProperty(context, {
+        "entities" : qCreatedBy(id + "col2A", EntityType.BODY),
+        "propertyType" : PropertyType.NAME,
+        "value" : "Part 2A - Lower Riser Stem Modular Extension"
+    });
 
     // =================================================================
     // PART 2B: Upper Dovetail Riser Head (X = 75mm, Y = 60mm)
@@ -225,6 +231,14 @@ function onStageRiserStemImpl(context is Context, id is Id, definition is map)
             "targets" : qCreatedBy(id + "col2B", EntityType.BODY),
             "operationType" : BooleanOperationType.SUBTRACTION
     });
+
+    // Name it for easier export.
+    setProperty(context, {
+        "entities" : qCreatedBy(id + "col2B", EntityType.BODY),
+        "propertyType" : PropertyType.NAME,
+        "value" : "Part 2B - Upper Dovetail Riser Head"
+    });
+
 }
 
 annotation { "Feature Type Name" : "OnStage Riser Stem" }
