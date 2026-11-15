@@ -1,0 +1,5 @@
+# Onshape Credentials & Document IDs
+.env
+.env.*
+!.env.example
+onshape_config.json
