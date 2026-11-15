@@ -1,8 +1,8 @@
-# **Music Desk for OnStage Keyboard Stand**
+# **Clamping Music Desk for OnStage Keyboard Stand**
 
 ## 1. Project Overview
 
-A 3‑D‑printed music desk that can be assembled in multiple configurations (single‑riser, dual‑riser, full/low‑profile, extra‑tall) to hold sheet music or books. It attaches to an "OnStage" brand keyboard stand, which also happens to be holding my Roland Fantom‑G8.  The music desk is built from OnShape FeatureScript geometry, exported as STL, sliced with OrcaSlicer, and printed on a Prusa CORE One.  The repository contains:
+A 3‑D‑printed clamping music desk that can be assembled in multiple configurations (single‑riser, dual‑riser, full/low‑profile, extra‑tall) to hold sheet music or books. It attaches to an "OnStage" brand keyboard stand, which also happens to be holding my Roland Fantom‑G8.  The clamping music desk is built from OnShape FeatureScript geometry, exported as STL, sliced with OrcaSlicer, and printed on a Prusa CORE One.  The repository contains:
 
 - `src/fs/` – Directory containing multiple FeatureScript files that generate the parts.
 - `PrintingGuide.md` – detailed print‑and‑assembly instructions.
@@ -13,7 +13,7 @@ This project is specifically designed for use with the Roland Fantom-G8 keyboard
 - **OnShape** – cloud CAD platform with FeatureScript.
 - **FeatureScript** – JavaScript‑like language for parametric geometry.
 - **OrcaSlicer** – open‑source slicer (used for layer height, infill, etc.).
-- **Prusa CORE One** – the 3‑D printer used for the stand.
+- **Prusa CORE One** – the 3‑D printer used for the clamping music desk.
 - **Git** – version control.
 - **Continue** – VSCode extension for AI-assisted development.
 
@@ -85,8 +85,8 @@ Ensure the `src/fs/` directory containing the .fs files is in the current workin
 ```
 
 ### Key Files
-- **`src/fs/*.fs`** – Parametric geometry for the stand. The scripts define parameters such as `part`, `material`, and `orientation`.
-- **`PrintingGuide.md`** – Human‑readable instructions for printing and assembling the stand.
+- **`src/fs/*.fs`** – Parametric geometry for the clamping music desk. The scripts define parameters such as `part`, `material`, and `orientation`.
+- **`PrintingGuide.md`** – Human‑readable instructions for printing and assembling the clamping music desk.
 - **`.continue/rules/CONTINUE.md`** – AI‑friendly guide for developers.
 
 ## 4. Development Workflow
@@ -126,7 +126,7 @@ Ensure the `src/fs/` directory containing the .fs files is in the current workin
 - **FeatureScript** – OnShape’s scripting language; similar to JavaScript but with geometry primitives (`box()`, `cylinder()`, `union()`, etc.).
 - **Parameters** – Exposed via the `params` object; they allow users to customize dimensions, material, and orientation.
 - **Slicer Settings** – Layer height, wall count, infill, brim, and support options are critical for part strength.
-- **Modular Riser** – The stand can be configured with a single or dual riser. Parameters `riserType` and `heightProfile` control this.
+- **Modular Riser** – The clamping music desk can be configured with a single or dual riser. Parameters `riserType` and `heightProfile` control this.
 - **Print Orientation** – The `PrintingGuide.md` specifies orientations for each part to maximize layer adhesion and support usage.
 
 ## 6. Common Tasks
@@ -140,9 +140,9 @@ Ensure the `src/fs/` directory containing the .fs files is in the current workin
 ### Updating Slicer Settings
 1. Open OrcaSlicer.
 2. Adjust the global settings in `Print Settings > General`.
-3. Save the profile as `OnStage-Stand.prusa` for future use.
+3. Save the profile as `OnStage-ClampingMusicDesk.prusa` for future use.
 
-### Changing the Stand Height
+### Changing the Clamping Music Desk Height
 1. Edit the `heightProfile` parameter in the script.
 2. Re‑export the STL.
 3. Re‑print with the updated dimensions.
