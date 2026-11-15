@@ -38,7 +38,7 @@ These tools were used during development of this specific repository. Users are 
 ### Prerequisites
 | Tool | Minimum Version | Notes |
 |------|-----------------|-------|
-| **OnShape** | Any account | Use the free tier for scripting; you’ll need a project to host the script. |
+| **OnShape** | - | You’ll need a project to host the feature script. |
 | **OrcaSlicer** | Latest release | Download from https://github.com/OrcaSlicer/OrcaSlicer. |
 | **Prusa CORE One** | – | Ensure firmware is up‑to‑date. |
 | **Git** | 2.x | For cloning and version control. |
