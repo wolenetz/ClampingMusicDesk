@@ -153,28 +153,39 @@ export const upperDeskCamLockParts = defineFeature(function(context is Context, 
                 "value" : "Part 5A - Rear Cam-Lock Yoke"
         });
 
-        // =================================================================
+// =================================================================
         // PART 5B: Eccentric Quick-Release Cam Lever (Prints flat next to 5A)
         // =================================================================
+        // Keeps original 9.8mm thickness & m3Clear bore, while fixing:
+        // 1. Bridge Clearance: Bottom radius kept <= 4.9mm AND lever handle routed
+        //    outside X = +5.5mm (Y > 25.5mm on 5A) so it NEVER hits 5A's Z = 3.0mm bridge!
+        // 2. Runner Engagement: Cam nose extended to 6.80mm flat + 7.55mm dual teeth
+        //    so it protrudes 1.75mm out the front of 5A to bite & wedge Part 3B's runner!
         var lcx = cx + 45 * millimeter;
         var lcy = cy + 15 * millimeter;
-        var camThick = 9.8 * millimeter; // Fits nicely inside the 10.5mm yoke slot
+        var camThick = 9.8 * millimeter; // Original snug width inside 5A's 10.5mm slot
 
         var camSk = newSketchOnPlane(context, id + "camSk", {
                 "sketchPlane" : plane(vector(lcx, lcy, 0 * millimeter), vector(0, 0, 1), vector(1, 0, 0))
         });
 
-        var c1  = vector(-6.25 * millimeter, -2.5 * millimeter); // Lower over-center flat
-        var c2  = vector(-6.25 * millimeter, -0.6 * millimeter); // Tooth base bottom
-        var c3  = vector(-6.80 * millimeter,  0.0 * millimeter); // 45-deg V-tooth tip (bites Part 3B micro-groove!)
-        var c4  = vector(-6.25 * millimeter,  0.6 * millimeter); // Tooth base top
-        var c5  = vector(-6.25 * millimeter,  3.5 * millimeter); // Upper over-center flat
-        var c6  = vector(-2.0 * millimeter,   5.2 * millimeter); // Top shoulder
-        var c7  = vector( 4.5 * millimeter,   5.2 * millimeter); // Rear spine transition
-        var c8  = vector( 4.5 * millimeter,  -28.0 * millimeter); // Ergonomic thumb lever tip (back)
-        var c9  = vector(-0.5 * millimeter,  -28.0 * millimeter); // Ergonomic thumb lever tip (front)
-        var c10 = vector(-0.5 * millimeter,  -5.2 * millimeter); // Unlocked clearance face (5.2mm < 6.05mm!)
-        var c11 = vector(-4.8 * millimeter,  -5.2 * millimeter); // Transition ramp onto cam lobe
+        // Cam profile around axle origin (0, 0):
+        // -X points forward toward Part 3B's runner (axle to 5A front face is 5.8mm; axle to seated runner is 6.55mm).
+        // -Y points down toward Part 5A's bridge (axle to bridge top face is 5.5mm, back edge of bridge is at +5.0mm).
+        var c1  = vector(-3.50 * millimeter, -3.40 * millimeter); // R = 4.88mm (Clears 5.5mm bridge floor!)
+        var c2  = vector(-5.80 * millimeter, -2.00 * millimeter); // Eccentric lead-in ramp
+        var c3  = vector(-6.80 * millimeter, -0.75 * millimeter); // Lower wedging flat (6.80mm reach > 6.55mm seated runner!)
+        var c4  = vector(-7.55 * millimeter,  0.00 * millimeter); // Tooth #1 tip (7.55mm reach bites full depth into 3B groove!)
+        var c5  = vector(-6.80 * millimeter,  0.75 * millimeter); // Inter-tooth flat
+        var c6  = vector(-6.80 * millimeter,  1.75 * millimeter); // Tooth #2 base
+        var c7  = vector(-7.55 * millimeter,  2.50 * millimeter); // Tooth #2 tip (matches 2.5mm groove pitch on Part 3B)
+        var c8  = vector(-6.80 * millimeter,  3.25 * millimeter); // Upper wedging flat
+        var c9  = vector(-5.00 * millimeter,  4.80 * millimeter); // Top shoulder
+        var c10 = vector( 9.50 * millimeter,  4.80 * millimeter); // Steps out past Part 5A's rear bridge edge (X > 5.0mm)!
+        var c11 = vector( 9.50 * millimeter, -26.0 * millimeter); // Outer back edge of thumb handle
+        var c12 = vector( 5.50 * millimeter, -26.0 * millimeter); // Inner front edge of thumb handle (clears X = 5.0mm bridge!)
+        var c13 = vector( 5.50 * millimeter, -4.80 * millimeter); // Clears the (X = +5.0mm, Y = -5.5mm) rear corner of 5A's bridge!
+        var c14 = vector( 0.00 * millimeter, -4.80 * millimeter); // Unlocked bottom face (4.80mm < 5.50mm bridge floor!)
 
         skLineSegment(camSk, "cL1",  { "start" : c1,  "end" : c2 });
         skLineSegment(camSk, "cL2",  { "start" : c2,  "end" : c3 });
@@ -186,7 +197,10 @@ export const upperDeskCamLockParts = defineFeature(function(context is Context, 
         skLineSegment(camSk, "cL8",  { "start" : c8,  "end" : c9 });
         skLineSegment(camSk, "cL9",  { "start" : c9,  "end" : c10 });
         skLineSegment(camSk, "cL10", { "start" : c10, "end" : c11 });
-        skLineSegment(camSk, "cL11", { "start" : c11, "end" : c1 });
+        skLineSegment(camSk, "cL11", { "start" : c11, "end" : c12 });
+        skLineSegment(camSk, "cL12", { "start" : c12, "end" : c13 });
+        skLineSegment(camSk, "cL13", { "start" : c13, "end" : c14 });
+        skLineSegment(camSk, "cL14", { "start" : c14, "end" : c1 });
         skSolve(camSk);
 
         opExtrude(context, id + "extCamLever", {
