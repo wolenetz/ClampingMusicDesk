@@ -49,7 +49,7 @@
 
 - **Standard Single-Riser Setup:** Print 1× Part 1A, 1× Part 1B, 1× Part 2A, 1× Part 2B, 1× Part 3A-Single, 1× Part 3B, page clamps, 2× Part 5A, 2× Part 5B.
 
-- **Heavy-Duty Dual-Riser Setup:** Print 2× Part 1A, 2× Part 1B, 2× Part 2A, 2× Part 2B, 1× Part 3A-Dual, 1× Part 3B, page clamps, 4× Part 5A, 4× Part 5B.
+- **Heavy-Duty Dual-Riser Setup:** Print 2× Part 1A, 2× Part 1B, 2× Part 2A, 2× Part 2B, 1× Part 3A-Dual, 1× Part 3B, page clamps, 2× Part 5A, 2× Part 5B.
 
 - **Low-Profile:** Omit Part 2A.
 
@@ -69,7 +69,7 @@
 
 - **Upper Desk Quick-Release Cam Lock:**
 
-    - **Part 5A (C-Yoke):** Slip over the back of Part 3A's guide block and anchor with **2× M3 × 10 mm screws**
+    - **Part 5A (C-Yoke):** Slip over the back of Part 3A's guide block and carefully anchor with **2× M4 (or M3) × 10 mm screws**
 
     - **Part 5B (Cam Lever):** Insert into C-Yoke center slot, drop an **M3 hex nut** into the right ear pocket, and secure with **1× M3 × 20 mm screw**
 
