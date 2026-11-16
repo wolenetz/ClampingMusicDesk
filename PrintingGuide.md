@@ -8,7 +8,7 @@
 
 - **Materials:**
 
-    - **PETG:** Part 1A OnStage L Clamp Top Saddle Cap and Spine (recommended), Part 4 springs
+    - **PETG:** Part 1A OnStage L Clamp Top Saddle Cap and Spine (recommended), Part 4 springs, Part 5A cam lock yoke
 
     - **PLA+ / Tough PLA:** All other parts
 
