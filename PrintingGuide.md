@@ -63,7 +63,7 @@
 
 **Part 3B (Upper Sliding Music Desk):** 
   - Face: Flat top edge flipped 180° upside-down (`Z = 190 mm`) with 0.0 mm brim-object gap, mouse ears on extreme left/right ends, and aux fan disabled for the first 10 mm to prevent edge curling.
-  - Rotation: **0° or 180°** (Fits straight, parallel to bed edges)
+  - Rotation: **140°** (Angled for more room for lots of brim)
   - Supports: Yes (Tree/Organic, *On build plate only*)
 
 **Part 4A (Thin Sheet Swan Neck Leaf Spring - Page Clamp):** Flat side face; **No supports**.
