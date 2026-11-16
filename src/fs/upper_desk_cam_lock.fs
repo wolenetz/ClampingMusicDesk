@@ -17,7 +17,7 @@ function getVar(context is Context, name is string, defaultVal is ValueWithUnits
     }
 }
 
-annotation { "Feature Type Name" : "Upper Desk Cam Lock (Part 5A & 5B)" }
+annotation { "Feature Type Name" : "OnStage Cam Lock (Part 5A & 5B)" }
 export const upperDeskCamLockParts = defineFeature(function(context is Context, id is Id, definition is map)
     precondition
     {
@@ -32,13 +32,13 @@ export const upperDeskCamLockParts = defineFeature(function(context is Context, 
         var yokeH = 14 * millimeter; // 14mm tall collar (Z = 0 to 14mm)
 
         // =================================================================
-        // PART 5A: Rear C-Yoke Bracket
+        // PART 5A: Rear C-Yoke Bracket (Sized for 32.0mm wide Part 3A guide)
         // =================================================================
         // Local Y corresponds to Part 3A's Y-axis (Y = 9.5mm is side hole center, Y = 14mm is rear of 3A)
-        var inHalfW  = 15.25 * millimeter; // 30.5mm inner span (slides smoothly over 30.0mm wide Part 3A guide block)
-        var outHalfW = 19.75 * millimeter; // 4.5mm thick side arms (M3x10mm screw pokes 5.5mm into 3A's 7mm wall!)
-        var earOutX  = 9.0 * millimeter;   // 18mm total rear cam-ear span (fits M3x20mm axle screw perfectly)
-        var slotHalfX = 5.25 * millimeter; // 10.5mm center clevis slot for the 10.0mm wide cam lever
+        var inHalfW   = 16.25 * millimeter; // 32.5mm inner span (0.25mm per-side clearance over 32.0mm Part 3A guide)
+        var outHalfW  = 20.75 * millimeter; // 4.5mm thick side arms (M3x10mm screw reaches 5.25mm into 3A's 8.3mm wall)
+        var earOutX   = 9.0 * millimeter;   // 18mm total rear cam-ear span (fits M3x20mm axle screw + M3 nut)
+        var slotHalfX = 5.25 * millimeter;  // 10.5mm center clevis slot for the 9.8mm wide cam lever
 
         var yokeSk = newSketchOnPlane(context, id + "yokeSk", {
                 "sketchPlane" : plane(vector(cx, cy, 0 * millimeter), vector(0, 0, 1), vector(1, 0, 0))
@@ -90,8 +90,7 @@ export const upperDeskCamLockParts = defineFeature(function(context is Context, 
                 "endDepth" : yokeH
         });
 
-        // Connect the left and right halves with a solid 3.5mm base bridge (Z = 0 to 3.5mm) at the back
-        // so the C-yoke is a single rigid one-piece print that prints flat on Z = 0 with zero supports!
+        // Connect the left and right halves with a solid 3.0mm base bridge (Z = 0 to 3.0mm) at the back
         fCuboid(context, id + "yokeBridge", {
                 "corner1" : vector(cx - earOutX, cy + 14.2 * millimeter, 0 * millimeter),
                 "corner2" : vector(cx + earOutX, cy + 25.0 * millimeter, 3.0 * millimeter)
@@ -109,8 +108,8 @@ export const upperDeskCamLockParts = defineFeature(function(context is Context, 
         // and the 1x M3x20mm rear cam axle hole at Y = 20.0mm, Z = 8.5mm
         var holeZ = 8.5 * millimeter;
         fCylinder(context, id + "sideAnchorBore", {
-                "bottomCenter" : vector(cx - 22 * millimeter, cy + 9.5 * millimeter, holeZ),
-                "topCenter"    : vector(cx + 22 * millimeter, cy + 9.5 * millimeter, holeZ),
+                "bottomCenter" : vector(cx - 25 * millimeter, cy + 9.5 * millimeter, holeZ),
+                "topCenter"    : vector(cx + 25 * millimeter, cy + 9.5 * millimeter, holeZ),
                 "radius"       : m3Clear / 2
         });
 
@@ -157,11 +156,6 @@ export const upperDeskCamLockParts = defineFeature(function(context is Context, 
         // =================================================================
         // PART 5B: Eccentric Quick-Release Cam Lever (Prints flat next to 5A)
         // =================================================================
-        // Axle center at (lcx, lcy).
-        // Distance from Axle (Y = 20.0mm) to Part 3B runner back (Y = 13.95mm) is 6.05mm.
-        // - Unlocked bottom radius (-Z in cam sketch): 5.2mm (leaves 0.85mm clearance!)
-        // - Locked over-center front flat (-X in cam sketch): 6.35mm + 0.50mm V-tooth = 6.85mm
-        //   (bites 0.5mm into the micro-groove AND pushes the runner 0.3mm forward into the dovetail!)
         var lcx = cx + 45 * millimeter;
         var lcy = cy + 15 * millimeter;
         var camThick = 9.8 * millimeter; // Fits nicely inside the 10.5mm yoke slot
@@ -170,19 +164,17 @@ export const upperDeskCamLockParts = defineFeature(function(context is Context, 
                 "sketchPlane" : plane(vector(lcx, lcy, 0 * millimeter), vector(0, 0, 1), vector(1, 0, 0))
         });
 
-        // Cam profile points around axle origin (0, 0):
-        // -X is towards the runner when locked (lever pointing down); -Y is unlocked face
-        var c1 = vector(-6.25 * millimeter, -2.5 * millimeter); // Lower over-center flat
-        var c2 = vector(-6.25 * millimeter, -0.6 * millimeter); // Tooth base bottom
-        var c3 = vector(-6.80 * millimeter,  0.0 * millimeter); // 45-deg V-tooth tip (bites Part 3B micro-groove!)
-        var c4 = vector(-6.25 * millimeter,  0.6 * millimeter); // Tooth base top
-        var c5 = vector(-6.25 * millimeter,  3.5 * millimeter); // Upper over-center flat
-        var c6 = vector(-2.0 * millimeter,   5.2 * millimeter); // Top shoulder
-        var c7 = vector( 4.5 * millimeter,   5.2 * millimeter); // Rear spine transition
-        var c8 = vector( 4.5 * millimeter,  -28.0 * millimeter); // Ergonomic thumb lever tip (back)
-        var c9 = vector(-0.5 * millimeter,  -28.0 * millimeter); // Ergonomic thumb lever tip (front)
-        var c10 = vector(-0.5 * millimeter, -5.2 * millimeter); // Unlocked clearance face (5.2mm < 6.05mm!)
-        var c11 = vector(-4.8 * millimeter, -5.2 * millimeter); // Transition ramp onto cam lobe
+        var c1  = vector(-6.25 * millimeter, -2.5 * millimeter); // Lower over-center flat
+        var c2  = vector(-6.25 * millimeter, -0.6 * millimeter); // Tooth base bottom
+        var c3  = vector(-6.80 * millimeter,  0.0 * millimeter); // 45-deg V-tooth tip (bites Part 3B micro-groove!)
+        var c4  = vector(-6.25 * millimeter,  0.6 * millimeter); // Tooth base top
+        var c5  = vector(-6.25 * millimeter,  3.5 * millimeter); // Upper over-center flat
+        var c6  = vector(-2.0 * millimeter,   5.2 * millimeter); // Top shoulder
+        var c7  = vector( 4.5 * millimeter,   5.2 * millimeter); // Rear spine transition
+        var c8  = vector( 4.5 * millimeter,  -28.0 * millimeter); // Ergonomic thumb lever tip (back)
+        var c9  = vector(-0.5 * millimeter,  -28.0 * millimeter); // Ergonomic thumb lever tip (front)
+        var c10 = vector(-0.5 * millimeter,  -5.2 * millimeter); // Unlocked clearance face (5.2mm < 6.05mm!)
+        var c11 = vector(-4.8 * millimeter,  -5.2 * millimeter); // Transition ramp onto cam lobe
 
         skLineSegment(camSk, "cL1",  { "start" : c1,  "end" : c2 });
         skLineSegment(camSk, "cL2",  { "start" : c2,  "end" : c3 });
