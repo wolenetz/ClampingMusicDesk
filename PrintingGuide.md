@@ -6,6 +6,7 @@
 **Printer:** Prusa CORE One (250 x 220 x 270 mm)
 
 **Materials:** 
+
 - **PETG:** Part 1A OnStage L Clamp Top Saddle Cap and Spine (recommended), Part 4 springs
 - **PLA+ / Tough PLA:** All other parts
   - *If you plan to use this in a warm/hot environment, don't use PLA.*
