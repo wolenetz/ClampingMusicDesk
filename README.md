@@ -3,79 +3,18 @@ considering alternatives to do this local-native in tools I haven't used before,
 
 # **Clamping Music Desk for OnStage Keyboard Stand**
 
-## 1. Project Overview
+## Project Overview
 
-A 3‑D‑printed clamping music desk that can be assembled in multiple configurations (single‑riser, dual‑riser, full/low‑profile, extra‑tall) to hold sheet music or books. It attaches to an "OnStage" brand keyboard stand, which also happens to be holding my Roland Fantom‑G8.  The clamping music desk is built from OnShape FeatureScript geometry, exported as STL, sliced with OrcaSlicer, and printed on a Prusa CORE One.  The repository contains:
-
-- `src/fs/` – Directory containing multiple FeatureScript files that generate the parts.
-- `PrintingGuide.md` – detailed print‑and‑assembly instructions.
-
-This project is specifically designed for use with the Roland Fantom-G8 keyboard, but can be adapted for other keyboards and music stands.
+A 3D-printed clamping music desk that can be assembled in multiple configurations (single-riser, dual-riser, full/low-profile, extra-tall) to hold sheet music or books. It attaches to an "OnStage" brand keyboard stand and is built from OnShape FeatureScript geometry.
 
 ### Key Technologies
-- **OnShape** – cloud CAD platform with FeatureScript.
-- **FeatureScript** – JavaScript‑like language for parametric geometry.
-- **OrcaSlicer** – open‑source slicer (used for layer height, infill, etc.).
-- **Prusa CORE One** – the 3‑D printer used for the clamping music desk.
-- **Git** – version control.
-- **Continue** – VSCode extension for AI-assisted development.
+- **OnShape** – cloud CAD platform with FeatureScript
+- **FeatureScript** – JavaScript-like language for parametric geometry  
+- **OrcaSlicer** – open-source slicer (used for layer height, infill, etc.)
+- **Prusa CORE One** – the 3D printer used for the clamping music desk
 
-### AI Assistant Usage
-This project was developed using various AI tools including:
-- **Claude** for agent-assisted long tasks like overnight reviews of complex FeatureScript changes or print configurations (using local qwen3-coder:30b model)
-- **Google Gemini Argon** for prototype generation and development guidance
-- **VSCode with Continue extension** for AI-assisted coding and documentation updates (with local gpt-oss:20b and devstral-small-2:24b models for chat-directed updates, and local qwen2.5-coder:1.5b model for autocomplete)
-
-#### Note on Tool Usage
-These tools were used during development of this specific repository. Users are free to use any tools they prefer for working with this project.
-
-### High‑Level Architecture
+### Project Structure
 ```
-┌───────────────────────────────────────────────────────────────────────────────────────┐
-│  src/fs/*.fs  →  OnShape  →  Export to STL  →  OrcaSlicer  →  Print                   │
-└───────────────────────────────────────────────────────────────────────────────────────┘
-```
-
-## 2. Getting Started
-
-### Prerequisites
-| Tool | Minimum Version | Notes |
-|------|-----------------|-------|
-| **OnShape** | - | You’ll need a project to host the feature script. |
-| **OrcaSlicer** | Latest release | Download from https://github.com/OrcaSlicer/OrcaSlicer. |
-| **Prusa CORE One** | – | Ensure firmware is up‑to‑date. |
-| **Git** | 2.x | For cloning and version control. |
-| **Continue** | 1.x | VSCode extension for AI-assisted development. |
-
-### Installation
-1. **Clone the repo**:
-   ```bash
-   git clone https://github.com/wolenetz/ClampingMusicDesk.git
-   cd ClampingMusicDesk
-   ```
-2. **Open in VS Code** and ensure the Continue extension is enabled.
-3. **Open the OnShape project** in your OnShape account and link the `OnShapeFeatureScript.fs` file.
-4. **Export STL** from OnShape for each part (see `PrintingGuide.md` for part list).
-5. **Load STL files into OrcaSlicer** and apply the slicer settings from `PrintingGuide.md`.
-6. **Print** on a Prusa CORE One.
-
-### Running Tests (Optional)
-FeatureScript can be unit‑tested with the OnShape Test Framework. To run tests locally:
-```bash
-# Install the OnShape CLI (if not already installed)
-npm install -g onshape-cli
-# Run tests
-onshape test run
-```
-Ensure the `src/fs/` directory containing the .fs files is in the current working directory.
-
-## 3. Project Structure
-
-```
-├── .continue/          # Continue workspace
-│   └── rules/
-│       └── CONTINUE.md
-├── PrintingGuide.md    # Print & assembly guide
 ├── src/fs/             # FeatureScript sources
 │   ├── l_clamp.fs           # L-Clamp parts
 │   ├── riser_stem.fs        # Riser stem parts  
@@ -84,89 +23,45 @@ Ensure the `src/fs/` directory containing the .fs files is in the current workin
 │   ├── music_desk_3b.fs         # Upper sliding desk
 │   ├── page_clamps.fs           # Page clamp parts
 │   └── upper_desk_cam_lock.fs   # Clamps upper desk to lower desk
+├── PrintingGuide.md    # Print & assembly guide
 └── .git/                # Git metadata
 ```
 
-### Key Files
-- **`src/fs/*.fs`** – Parametric geometry for the clamping music desk. The scripts define parameters such as `part`, `material`, and `orientation`.
-- **`PrintingGuide.md`** – Human‑readable instructions for printing and assembling the clamping music desk.
-- **`.continue/rules/CONTINUE.md`** – AI‑friendly guide for developers.
+## Getting Started
 
-## 4. Development Workflow
+### Prerequisites
+| Tool | Minimum Version | Notes |
+|------|-----------------|-------|
+| **OnShape** | - | Project hosting |
+| **OrcaSlicer** | Latest release | https://github.com/OrcaSlicer/OrcaSlicer |
+| **Prusa CORE One** | – | Ensure firmware is up-to-date |
+| **Git** | 2.x | For cloning and version control |
 
-| Step | Description | Tools |
-|------|-------------|-------|
-| **Branch** | Create a feature branch from `main` | Git |
-| **Code** | Edit files in `src/fs/` | VS Code + Continue |
-| **Test** | Run FeatureScript unit tests | OnShape CLI |
-| **Export** | Generate STL files from OnShape | OnShape UI |
-| **Slice** | Load STL into OrcaSlicer | OrcaSlicer |
-| **Print** | Print on Prusa CORE One | PrusaSlicer/Print Server |
-| **Commit** | Push changes | Git |
-| **PR** | Submit pull request | GitHub |
+### Installation
+1. Clone the repo: `git clone https://github.com/wolenetz/ClampingMusicDesk.git`
+2. Open in VS Code with Continue extension enabled (not required)
+3. Open OnShape project and link the FeatureScript files
+4. Export STL from OnShape for each part (see PrintingGuide.md)
+5. Load into OrcaSlicer and apply slicer settings
+6. Print on Prusa CORE One
 
-### Development Notes
-- The Continue extension enhances development workflow by providing AI-assisted code generation and debugging support.
-- All development is done in a parametric manner using OnShape's FeatureScript language.
+### Development Workflow
+1. Create feature branch from `main`
+2. Edit files in `src/fs/` 
+3. Run FeatureScript unit tests with OnShape CLI (TODO, manual review currently)
+4. Export STL from OnShape
+5. Slice with OrcaSlicer
+6. Print on Prusa CORE One
+7. Commit and submit pull request
 
-
-### Coding Conventions
-- Use camelCase for variable names. (TODO)
-- Keep functions under 200 lines. (TODO)
-- Document each public function with JSDoc comments. (TODO)
-- Use the `params` object for user‑exposed parameters. (TODO)
-
-### Testing
-- Unit tests should cover geometry creation and parameter validation. (TODO)
-- Integration tests can be manual: export STL, slice, and verify dimensions.
-
-### Build / Deployment
-- There is no build step beyond the FeatureScript export; the output is a set of STL files.
-- To automate exports, you can use the OnShape API to trigger a script run. (TODO)
-
-## 5. Key Concepts
-
-- **FeatureScript** – OnShape’s scripting language; similar to JavaScript but with geometry primitives (`box()`, `cylinder()`, `union()`, etc.).
-- **Parameters** – Exposed via the `params` object; they allow users to customize dimensions, material, and orientation.
-- **Slicer Settings** – Layer height, wall count, infill, brim, and support options are critical for part strength.
-- **Modular Riser** – The clamping music desk can be configured with a single or dual riser. Parameters `riserType` and `heightProfile` control this.
-- **Print Orientation** – The `PrintingGuide.md` specifies orientations for each part to maximize layer adhesion and support usage.
-
-## 6. Common Tasks
-
+## Common Tasks
 ### Adding a New Part
-1. Define a new function in `src/fs/*.fs`.
-2. Add a `params` entry for the part name.
-3. Export the part from OnShape and add it to the slicer.
-4. Update the PrintingGuide.md with orientation and support guidance.
+1. Define new function in `src/fs/*.fs`
+2. Update the set of OnShape feature studio tabs with the src/fs/*.fs
+3. Export STL(s) from OnShape and add to slicer, 3D print updated part(s)
+4. Update PrintingGuide.md
 
-### Updating Slicer Settings
-1. Open OrcaSlicer.
-2. Adjust the global settings in `Print Settings > General`.
-3. Save the profile as `OnStage-ClampingMusicDesk.prusa` for future use.
-
-### Changing the Clamping Music Desk Height
-1. Edit the `heightProfile` parameter in the script.
-2. Re‑export the STL.
-3. Re‑print with the updated dimensions.
-
-## 7. Troubleshooting
-
-| Symptom | Likely Cause | Fix |
-|---------|---------------|-----|
-| Warped top of Part 1A | Uneven bed temperature | Level the bed, use a brim. |
-| Incomplete infill on Part 3B | Low infill setting | Increase infill to 40 % or use a higher layer height. |
-| Loose dovetail joints | Incorrect clearance | Re‑measure and adjust the dovetail clearance in the script. |
-| Part 4 springs not staying in place | Wrong material | Use PETG as recommended; PLA may not hold the spring tension. |
-| Print prints upside‑down | Wrong orientation | Rotate the part 180° in OrcaSlicer as per PrintingGuide.md. |
-
-## 8. References
-- **OnShape FeatureScript Docs** – https://cad.onshape.com/docs/featureScript.html
+## References
+- **OnShape FeatureScript Docs** – https://cad.onshape.com/docs/featureScript.html  
 - **OrcaSlicer** – https://github.com/OrcaSlicer/OrcaSlicer
-- **Prusa CORE One Manual** – https://manual.prusa3d.com/
-- **Git Documentation** – https://git-scm.com/doc
-- **Continue AI Docs** – https://continue.dev/docs
-
----
-
-> **NOTE**: Some sections, such as the exact geometry of the riser or the full list of parameters, are derived from the existing `OnShapeFeatureScript.fs`. If you encounter discrepancies, review the script or open a PR to update this guide.
+- **Prusa CORE One Manual** – https://manual.prusa3d.com/
