@@ -23,8 +23,9 @@ A 3D-printed clamping music desk that can be assembled in multiple configuration
 │   ├── music_desk_3b.fs         # Upper sliding desk
 │   ├── page_clamps.fs           # Page clamp parts
 │   └── upper_desk_cam_lock.fs   # Clamps upper desk to lower desk
-├── PrintingGuide.md    # Print & assembly guide
-└── .git/                # Git metadata
+├── .github/workflows/  # GitHub Actions workflows
+│   └── convert-printing-guide.yml  # Converts PrintingGuide.md to Printables HTML
+├── PrintingGuide.md    # Print & assembly guide (automatically updates PrintingGuide-printables.html for Printables.com)
 ```
 
 ## Getting Started
@@ -53,6 +54,8 @@ A 3D-printed clamping music desk that can be assembled in multiple configuration
 5. Slice with OrcaSlicer
 6. Print on Prusa CORE One
 7. Commit and submit pull request
+   - Note: Changes to `PrintingGuide.md` will automatically update `PrintingGuide-printables.html` for use in the model description on Printables.com.
+   - _Note: Any such asynchronous changes may require a later pull to get the updated result from GitHub._
 
 ## Common Tasks
 ### Adding a New Part
