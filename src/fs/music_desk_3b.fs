@@ -1,27 +1,11 @@
 // =========================================================================
-// PART 3B: Upper Sliding Music Desk (Fixed 4-Point Runners + Loosened Accessory Rail)
+// PART 3B: Upper Sliding Music Desk (Snug Runners + Rear Cam Micro-Grooves)
 // =========================================================================
 FeatureScript 2411;
 import(path : "onshape/std/common.fs", version : "2411.0");
 
-// Helper function to read variables from your Part Studio Variable Table
-function getVar(context is Context, name is string, defaultVal is ValueWithUnits) returns ValueWithUnits
-{
-    try silent
-    {
-        return getVariable(context, name);
-    }
-    catch
-    {
-        return defaultVal;
-    }
-}
-
 function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map, partName is string)
 {
-    // 1. Pull variables from your Variable Table
-    var m3Clear = getVar(context, "m3_clear", 3.4 * millimeter);
-
     // Placed side-by-side at X = 500mm (and resting on Z = 0mm!) so it is 100% separate from 3A!
     var cx = 500 * millimeter;
     var cy = 0 * millimeter;
@@ -39,7 +23,7 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map,
 
     var railXOffsets = [-75 * millimeter, 75 * millimeter];
 
-    // 2. Upper Music Desk Plate (240mm wide x 6mm thick x 60mm tall, Z = 130mm to 190mm)
+    // 1. Upper Music Desk Plate (240mm wide x 6mm thick x 60mm tall, Z = 130mm to 190mm)
     fCuboid(context, id + "upperPlate", {
             "corner1" : vector(cx - halfW, cy - plateT, headBotZ),
             "corner2" : vector(cx + halfW, cy,          headTopZ)
@@ -55,18 +39,18 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map,
         });
     }
 
-    // 3A. Dual Male 4-Point Trapezoid Dovetail Runners (At X = +/-75mm, Z = 0mm to 143mm)
-    // Matches Part 3A's exact 4-point trapezoid slot (which sits between Y = 4.55mm and Y = 14mm)
-    // with 0.25mm extra male clearance so it slides smoothly
+    // 2A. Dual Male 4-Point Trapezoid Dovetail Runners (At X = +/-75mm, Z = 0mm to 143mm)
+    // Tightened mFitTol from 0.25mm -> 0.05mm (since Part 3A already has 0.45mm slide_tol built in!)
+    // Gives a crisp, rattle-free ~0.25-0.30mm per-side sliding fit
     var maleSlideSk = newSketchOnPlane(context, id + "maleSlideSk", {
             "sketchPlane" : plane(vector(cx, cy, runnerBotZ), vector(0, 0, 1), vector(1, 0, 0))
     });
 
-    var mFitTol = 0.25 * millimeter;            // Extra male clearance for smooth sliding in printed 3A
-    var mYBack  = guideDepth - mFitTol;         // +13.75mm (stays slightly inside the Y = 14mm rear face)
-    var mYFront = (5 * millimeter) + mFitTol;   // +5.25mm  (clears Part 3A's solid Y = 0..4.55mm front wall!)
-    var mHNeck  = (6 * millimeter) - mFitTol;   // 11.50mm total neck width at Y = +13.75mm (3A slot is ~12.37mm wide)
-    var mHWide  = (9 * millimeter) - mFitTol;   // 17.50mm total flare width at Y = +5.25mm (3A slot is ~18.42mm wide)
+    var mFitTol = 0.05 * millimeter;            // Snug anti-rattle fit inside Part 3A's female slot
+    var mYBack  = guideDepth - mFitTol;         // +13.95mm (flush with Y = 14mm rear opening)
+    var mYFront = (5 * millimeter) + mFitTol;   // +5.05mm  (0.50mm clearance from Part 3A's Y = 4.55mm front wall)
+    var mHNeck  = (6 * millimeter) - mFitTol;   // 11.90mm total neck width at Y = +13.95mm
+    var mHWide  = (9 * millimeter) - mFitTol;   // 17.90mm total flare width at Y = +5.05mm
 
     var mIdx = 0;
     for (var rx in railXOffsets)
@@ -91,8 +75,7 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map,
             "endDepth" : runnerTopZ - runnerBotZ
     });
 
-    // 3B. Upper Stand-Off Webs (Bridges Y = 0mm to Y = +6mm ONLY behind the Upper Plate from Z = 130mm to 143mm!)
-    // Connects the trapezoid runners solidly to the back of upperPlate while keeping Z = 0..130mm 100% clear!
+    // 2B. Upper Stand-Off Webs (Bridges Y = 0mm to Y = +6mm ONLY behind the Upper Plate from Z = 130mm to 143mm!)
     var webBodies = [];
     var wIdx = 0;
     for (var rx in railXOffsets)
@@ -105,23 +88,23 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map,
         webBodies = append(webBodies, qCreatedBy(id + ("runnerWeb" ~ wIdx), EntityType.BODY));
     }
 
-    // 4. Part 4 Horizontal Clamp Accessory Rail on Top Back of Part 3B (Z = 150mm to 178mm)
+    // 3. Part 4 Horizontal Clamp Accessory Rail on Top Back of Part 3B (Z = 150mm to 178mm)
     // Inset by railClearTol (0.25mm) on all mating faces so Part 4 page clamps slide smoothly
     var railInset    = 3 * millimeter;
     var railBaseZ    = headTopZ - (40 * millimeter);
-    var railClearTol = 0.25 * millimeter; // Loosens fit against existing Part 4 clamps without modifying Part 4
+    var railClearTol = 0.25 * millimeter;
 
     var railSketch = newSketchOnPlane(context, id + "railSketch", {
             "sketchPlane" : plane(vector(cx - halfW + railInset, cy, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
     });
-    var u1 = vector(0 * millimeter,                railBaseZ + 4 * millimeter + railClearTol);
-    var u2 = vector(6 * millimeter + railClearTol, railBaseZ + 4 * millimeter + railClearTol);
-    var u3 = vector(6 * millimeter + railClearTol, railBaseZ + railClearTol);
+    var u1 = vector(0 * millimeter,                 railBaseZ + 4 * millimeter + railClearTol);
+    var u2 = vector(6 * millimeter + railClearTol,  railBaseZ + 4 * millimeter + railClearTol);
+    var u3 = vector(6 * millimeter + railClearTol,  railBaseZ + railClearTol);
     var u4 = vector(14 * millimeter - railClearTol, railBaseZ + 4 * millimeter + railClearTol);
     var u5 = vector(14 * millimeter - railClearTol, railBaseZ + 24 * millimeter - railClearTol);
-    var u6 = vector(6 * millimeter + railClearTol, railBaseZ + 28 * millimeter - railClearTol);
-    var u7 = vector(6 * millimeter + railClearTol, railBaseZ + 24 * millimeter - railClearTol);
-    var u8 = vector(0 * millimeter,                railBaseZ + 24 * millimeter - railClearTol);
+    var u6 = vector(6 * millimeter + railClearTol,  railBaseZ + 28 * millimeter - railClearTol);
+    var u7 = vector(6 * millimeter + railClearTol,  railBaseZ + 24 * millimeter - railClearTol);
+    var u8 = vector(0 * millimeter,                 railBaseZ + 24 * millimeter - railClearTol);
 
     skLineSegment(railSketch, "uL1", { "start" : u1, "end" : u2 });
     skLineSegment(railSketch, "uL2", { "start" : u2, "end" : u3 });
@@ -153,28 +136,38 @@ function onStageMusicDesk3BImpl(context is Context, id is Id, definition is map,
             "operationType" : BooleanOperationType.UNION
     });
 
-    // 5. Series of 9 Vertical Detent Pin Holes Spaced Every 15mm Along Both Male Dovetail Runners!
-    var runnerHoleTools = [];
-    var hIdx = 0;
-    for (var rx in railXOffsets)
+    // 4. Rear 45-Degree Micro-Groove Indexing Rack Along Both Runners (Z = 10mm to 122.5mm, every 2.5mm)
+    // Gives the Part 5B Eccentric Cam Lever positive mechanical teeth to bite into while keeping runners 100% solid!
+    var grooveSk = newSketchOnPlane(context, id + "grooveSk", {
+            "sketchPlane" : plane(vector(cx - halfW, cy, 0 * millimeter), vector(1, 0, 0), vector(0, 1, 0))
+    });
+
+    var gDepth = 0.65 * millimeter; // 0.65mm deep 45-deg V-grooves (1.3mm vertical mouth)
+    var yOuter = guideDepth + (0.5 * millimeter);
+    var yTip   = mYBack - gDepth;   // 13.30mm
+
+    for (var g = 0; g < 45; g += 1)
     {
-        for (var k = 0; k < 9; k += 1)
-        {
-            hIdx += 1;
-            var holeZ = runnerBotZ + (110 * millimeter) - (k * 15 * millimeter);
+        var gz = runnerBotZ + (10 * millimeter) + (g * 2.5 * millimeter);
+        var gp1 = vector(yOuter, gz - gDepth - 0.5 * millimeter);
+        var gp2 = vector(yTip,   gz);
+        var gp3 = vector(yOuter, gz + gDepth + 0.5 * millimeter);
 
-            fCylinder(context, id + ("runnerDetent" ~ hIdx), {
-                    "bottomCenter" : vector(cx + rx - 12 * millimeter, cy + 9.5 * millimeter, holeZ),
-                    "topCenter"    : vector(cx + rx + 12 * millimeter, cy + 9.5 * millimeter, holeZ),
-                    "radius"       : m3Clear / 2
-            });
-            runnerHoleTools = append(runnerHoleTools, qCreatedBy(id + ("runnerDetent" ~ hIdx), EntityType.BODY));
-        }
+        skLineSegment(grooveSk, "gTop_"  ~ g, { "start" : gp1, "end" : gp2 });
+        skLineSegment(grooveSk, "gBot_"  ~ g, { "start" : gp2, "end" : gp3 });
+        skLineSegment(grooveSk, "gBack_" ~ g, { "start" : gp3, "end" : gp1 });
     }
+    skSolve(grooveSk);
 
-    // Subtract all 18 detent pin holes from Part 3B
+    opExtrude(context, id + "extGrooves", {
+            "entities" : qSketchRegion(id + "grooveSk"),
+            "direction" : vector(1, 0, 0),
+            "endBound" : BoundingType.BLIND,
+            "endDepth" : deskW
+    });
+
     opBoolean(context, id + "finalUpperCut", {
-            "tools" : qUnion(runnerHoleTools),
+            "tools" : qCreatedBy(id + "extGrooves", EntityType.BODY),
             "targets" : qCreatedBy(id + "upperPlate", EntityType.BODY),
             "operationType" : BooleanOperationType.SUBTRACTION
     });

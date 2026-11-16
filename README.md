@@ -83,7 +83,7 @@ Ensure the `src/fs/` directory containing the .fs files is in the current workin
 │   ├── music_desk_3a_dual.fs    # Dual riser lower desk
 │   ├── music_desk_3b.fs         # Upper sliding desk
 │   ├── page_clamps.fs           # Page clamp parts
-│   └── detent_pin.fs            # Detent pin
+│   └── upper_desk_cam_lock.fs   # Clamps upper desk to lower desk
 └── .git/                # Git metadata
 ```
 
