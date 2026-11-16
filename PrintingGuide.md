@@ -1,8 +1,7 @@
-# Clamping Music Desk for OnStage Keyboard Stand
+## Clamping Music Desk for OnStage Keyboard Stand
 **OrcaSlicer & Prusa CORE One Print Guide**
 
----
-## Global OrcaSlicer Settings
+### Global OrcaSlicer Settings
 **Printer:** Prusa CORE One (250 x 220 x 270 mm)
 
 **Materials:** 
@@ -22,8 +21,7 @@
 
 **Infill Rotation:** Rotate the infill to match part rotation when applicable for improved strength.
 
----
-## Part Orientation & Support
+### Part Orientation & Support
 
 | Part | Face | Rotation | Supports |
 |------|------|----------|----------|
@@ -40,10 +38,9 @@
 | Part 5A | Flat bottom face | Any | Optional |
 | Part 5B | Flat side face | Any | Optional |
 
----
-## Hardware & Assembly
+### Hardware & Assembly
 
-### Configuration Options
+#### Configuration Options
 **Standard Single-Riser Setup:** Print 1× Part 1A, 1× Part 1B, 1× Part 2A, 1× Part 2B, 1× Part 3A-Single, 1× Part 3B, page clamps, 2× Part 5A, 2× Part 5B.
 
 **Heavy-Duty Dual-Riser Setup:** Print 2× Part 1A, 2× Part 1B, 2× Part 2A, 2× Part 2B, 1× Part 3A-Dual, 1× Part 3B, page clamps, 4× Part 5A, 4× Part 5B.
@@ -52,7 +49,7 @@
 
 **Tall-Profile:** Print more Part 2A.
 
-### Fasteners & Mounting
+#### Fasteners & Mounting
 **Clamps & Dorsal Tension Spine:** Secured with 5× M3 × 30 mm screws and 5× M3 hex nuts (10× screws and 10× nuts total for Dual-Riser).
 
 **Modular Riser Locks:** 
