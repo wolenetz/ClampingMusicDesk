@@ -6,11 +6,9 @@
 
 - **Printer:** Prusa CORE One (250 x 220 x 270 mm)
 - **Materials:**
-
-  - **PETG:** Part 1A OnStage L Clamp Top Saddle Cap and Spine (recommended), Part 4 springs
-  - **PLA+ / Tough PLA:** All other parts
-
-    - *If you plan to use this in a warm/hot environment, don't use PLA.*
+    - **PETG:** Part 1A OnStage L Clamp Top Saddle Cap and Spine (recommended), Part 4 springs
+    - **PLA+ / Tough PLA:** All other parts
+        - *If you plan to use this in a warm/hot environment, don't use PLA.*
 
 - **Layer Height:** 0.20 mm (or 0.30 mm for speedier prints) (0.4 mm nozzle)
 - **Perimeters (Walls):** 8 walls (on upper and lower desk parts, 3-4 walls prints faster)
@@ -49,13 +47,11 @@
 
 - **Clamps & Dorsal Tension Spine:** Secured with 5× M3 × 30 mm screws and 5× M3 hex nuts (10× screws and 10× nuts total for Dual-Riser).
 - **Modular Riser Locks:**
-
-  - *Standard Full Height:* Secured with 2× M4 × 30 mm screws and 2× M4 hex nuts
-  - *Low-Profile:* Uses 1× M4 × 30 mm screw and 1× M4 hex nut per column
+    - *Standard Full Height:* Secured with 2× M4 × 30 mm screws and 2× M4 hex nuts
+    - *Low-Profile:* Uses 1× M4 × 30 mm screw and 1× M4 hex nut per column
 - **Dual-Riser Stand Spacing:** Mount the two Part 1A/1B clamp assemblies spaced **150 mm (approx. 5.9 in) apart center-to-center**.
 - **Upper Desk Quick-Release Cam Lock:**
-
-  - **Part 5A (C-Yoke):** Slip over the back of Part 3A's guide block and anchor with **2× M3 × 10 mm screws**
-  - **Part 5B (Cam Lever):** Insert into C-Yoke center slot, drop an **M3 hex nut** into the right ear pocket, and secure with **1× M3 × 20 mm screw**
+    - **Part 5A (C-Yoke):** Slip over the back of Part 3A's guide block and anchor with **2× M3 × 10 mm screws**
+    - **Part 5B (Cam Lever):** Insert into C-Yoke center slot, drop an **M3 hex nut** into the right ear pocket, and secure with **1× M3 × 20 mm screw**
 - **Batwing (Part 4B1/4B2):** Assembled with **1× M3 screw** and **1× M3 hex nut**.
 - **Break-In:** Slide all dovetails back and forth 5–10 times before final mounting.
