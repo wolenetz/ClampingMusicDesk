@@ -8,29 +8,24 @@
 
 **Materials:** 
   - **PETG:** Part 1A OnStage L Clamp Top Saddle Cap and Spine (recommended), Part 4 springs
-  - **PLA+ / Tough PLA:** Part 1B OnStage L Clamp Lower Cradle and Arm, Parts 2A/2B modular riser stem, Parts 3A/3A-Dual/3B desks, Parts 4B1/4B2 batwing assembly, Part 5A C-Yoke & Part 5B Cam Lever
+  - **PLA+ / Tough PLA:** All other parts
     - **If you plan to use this in a warm/hot environment, don't use PLA, which will not perform well in those conditions and structure might fail easily.**
-**Layer Height:** 0.20 mm (0.4 mm nozzle)
 
-**Perimeters (Walls):** **8 walls**
+**Layer Height:**
+  - 0.20 mm (or 0.30 mm for speedier prints) (0.4 mm nozzle)
 
-**Top / Bottom Shells:** 8 Top / 8 Bottom
+**Perimeters (Walls):**
+  - **8 walls** (on upper and lower desk parts, 3-4 walls prints faster and doesn't really impact result)
 
-**Infill:** 40% Gyroid or Cubic
+**Top / Bottom Shells:**
+  - 8 Top / 8 Bottom, though on upper and lower desk parts, 1-2 bottom and 3-4 top prints faster and doesn't really impact results
 
-**Brim:** 5 mm outer brim for tall/long parts (1A, 1B, 2A, 2B, 3A/3A-Dual, 3B)
+**Infill:**
+  - 40% Cubic
+  - Rotate the infill to match part rotation, if any.
 
-**Draft prints might work, 0.3mm all PLA with similar settings otherwise.** Really just the springs might benefit the most from printing with PETG.
-
-    - UPDATE: I printed:
-      - Part 1A OnStage L Clamp Top Saddle Cap and Spine: 0.3mm layer, Transparent Red PETG 8 walls, 8 top, 8 bottom, 40% Cubic, auto brim, upside-down, rotated on Z to parallel the front of print bed. Post-processed using plyers and burr removal tool.
-      - Part 1B OnStage L Clamp Lower Cradle and Arm, Parts 2A/2B modular riser stem: 0.3mm layer, Overture black Easy PLA 8 walls, 8 top, 8 bottom, 40% cubic, auto brim, risers laid flat, lower riser and lower clamp rotated on Z to parallel the front of print bed, upper riser rotated on Z perpendicular to the front of print bed. Post-processed using plyers, burr removal tool, and on male joint parts I sanded with fine-grit until able to join securely without too much force. Lower clamp portion started peeling from bed on clamp side but didn't severely impact function or aesthetic. Assembled to rigid and surprisingly heavy structure. 
-      - Part 3A-Single Single Riser Lower Music Desk: 0.3mm layer, Eryone Silk blue/green PLA, 4 walls, 5 top, 1 bottom, 15% cubic, rotated on Z to 40 degrees. Used Orcaslicer Prusa Generic Silk PLA preset (slower extrusion, 0.6mm Z-hop). It peeled from both sides of long dimension, making the underside slightly curved, but the middle stayed attached.
-      - Part 4 springs: 0.2mm layer, Transparent Red PETG 8 walls, 8 top, 8 bottom, 40% cubic, auto brim, all flat against bed on largest sides.
-      - Part 4B1/4B2 batwing assembly TBD
-      - Part 5A/5B upper desk cam locks TBD
-      - Part 3B Upper Sliding Music Desk TBD
-      - Note: Result might be better for angled parts if I had rotated the infill too.
+**Brim:**
+  - 25 mm outer brim for tall/long parts (1A, 1B, 2A, 2B, 3A/3A-Dual, 3B). Set brim-part distance to 0.0. This helps prevent PLA detaching from bed on long narrow parts.
 
 ---
 
@@ -58,7 +53,7 @@
 
 **Part 3A (Single Riser Lower Music Desk) OR Part 3A-Dual (Dual Riser Lower Music Desk):** 
   - Face: Flat bottom face (`Z = 0`)
-  - Rotation: **0° or 180°** (Fits straight, parallel to bed edges)
+  - Rotation: **140°** (Angled for more room for lots of brim)
   - Supports: Yes (Tree/Organic, *On build plate only*)
 
 **Part 3B (Upper Sliding Music Desk):** 
@@ -66,17 +61,23 @@
   - Rotation: **140°** (Angled for more room for lots of brim)
   - Supports: Yes (Tree/Organic, *On build plate only*)
 
-**Part 4A (Thin Sheet Swan Neck Leaf Spring - Page Clamp):** Flat side face; **No supports**.
+**Part 4A (Thin Sheet Swan Neck Leaf Spring - Page Clamp):**
+  - Flat side face; **No supports**.
 
-**Part 4B1 (Medium Book Flip Up Circular Knuckle Hinge - Page Clamp):** Flat side face; Supports *on build plate only*.
+**Part 4B1 (Medium Book Flip Up Circular Knuckle Hinge - Page Clamp):**
+  - Flat side face; Supports *on build plate only*.
 
-**Part 4B2 (Medium Book Circular Knuckle Clevis Batwing Finger - Page Clamp):** Flat top surface flipped 180° upside-down (`Z = 198 mm`); **No supports**.
+**Part 4B2 (Medium Book Circular Knuckle Clevis Batwing Finger - Page Clamp):**
+  - Flat top surface flipped 180° upside-down (`Z = 198 mm`); **No supports**.
 
-**Part 4C (Thick Book Deep Reach S Spring - Page Clamp):** Flat side face; **No supports**.
+**Part 4C (Thick Book Deep Reach S Spring - Page Clamp):**
+  - Flat side face; **No supports**.
 
-**Part 5A (Rear Cam-Lock Yoke):** Flat bottom face (`Z = 0`) on print bed for support-free printing.
+**Part 5A (Rear Cam-Lock Yoke):**
+  - Flat bottom face.
 
-**Part 5B (Eccentric Cam Lever):** Flat side face (`Z = 0`) on print bed for support-free printing with continuous layer loops.
+**Part 5B (Eccentric Cam Lever):**
+  - Flat side face
 
 ---
 
