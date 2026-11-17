@@ -71,8 +71,8 @@
 
     - **Part 5A (C-Yoke):** Slip over the back of Part 3A's guide block and carefully anchor with **2× M4 (or M3) × 10 mm screws**
 
-    - **Part 5B (Cam Lever):** Insert into C-Yoke center slot, drop an **M3 hex nut** into the right ear pocket, and secure with **1× M3 × 20 mm screw**
+    - **Part 5B (Cam Lever):** Insert into C-Yoke center slot, drop an **M3 hex nut** into the right ear pocket (pliers may help snap it into the pocket), and secure with **1× M3 × 20 mm screw**
 
-- **Batwing (Part 4B1/4B2):** Assembled with **1× M3 screw** and **1× M3 hex nut**.
+- **Batwing (Part 4B1/4B2):** Assembled with **1× M3 screw** (30 mm works great) and **1× M3 hex nut**
 
 - **Break-In:** Slide all dovetails back and forth 5–10 times before final mounting.
