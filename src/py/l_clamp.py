@@ -77,23 +77,22 @@ with BuildPart() as armBuilder:
     fillet(armFilletEdges, radius=5.0)
 armBody = armBuilder.part
 
-
 # 2B. Central Dorsal Tension Spine on Part 1A (Y = 20mm to seatFrontY, Z = 11mm to topZ)
 spineBotZ = 10.0 + (clampGap / 2.0)  # +11.00mm
 with BuildPart() as spineBuilder:
     with Locations((-10.0, 20.0, spineBotZ)):
         Box(20.0, seatFrontY - 20.0, topZ - spineBotZ, align=(Align.MIN, Align.MIN, Align.MIN))
 
+    # Select the 2 top longitudinal edges (and top rear edge if desired)
     spineTargetPts = [
-        (-10.0, 100.0, topZ),
-        (10.0, 100.0, topZ),
-        (-10.0, seatFrontY, topZ),
-        (10.0, seatFrontY, topZ),
+        (-10.0, 100.0, topZ),     # Left top longitudinal edge
+        (10.0, 100.0, topZ),      # Right top longitudinal edge
+        (0.0, seatFrontY, topZ),  # Rear top transverse edge (midpoint avoids 3-edge corner ambiguity)
     ]
     spineFilletEdges = [edgeAtPoint(spineBuilder.part, pt) for pt in spineTargetPts]
-    fillet(spineFilletEdges, radius=10.0)
+    # Subtract 1e-4 from 10.0mm so the two 10mm fillets on the 20mm wide spine don't collide at X=0 in OCCT
+    fillet(spineFilletEdges, radius=10.0 - 1e-4)
 spineBody = spineBuilder.part
-
 
 # 3. Union Main Clamp Block, Arm, Dorsal Spine, and Upward Riser Peg, then Cut All Features
 cornerCoords = [
