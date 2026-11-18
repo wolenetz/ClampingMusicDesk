@@ -19,6 +19,10 @@ backReach = 155.0
 # This narrow version uses arm_halfW=15mm for a total of 30mm wide arm
 arm_halfW = 15.0                                 # Half-width of extension arm (narrow version: 15mm vs standard 25mm)
 
+# Clamp block X-half width parameter - narrower than original l_clamp.py (which uses clampHalfW=45mm, total 90mm)
+# This narrow version uses clampHalfW=30mm for a total of 60mm wide clamp block
+clampHalfW = 30.0                                # Half-width of vertical clamp block (narrow: 30mm vs standard 45mm)
+
 halfTube = tubeSize / 2.0                        # 15.25mm
 topZ = halfTube + 8.0                            # +23.25mm
 botZ = -35.0                                     # -35.00mm
@@ -40,10 +44,10 @@ def edgeAtPoint(partObj: Part, ptCoords: tuple[float, float, float], tolVal: flo
             return edgeItem
     raise ValueError(f"No edge found near point {ptCoords}")
 
-# 1. Solid 90mm Wide Clamp Block (Filleted on Z-parallel edges while pristine)
+# 1. Solid Clamp Block (Filleted on Z-parallel edges while pristine)
 with BuildPart() as clampBlockBuilder:
-    with Locations((-45.0, -30.0, botZ)):
-        Box(90.0, 60.0, topZ - botZ, align=(Align.MIN, Align.MIN, Align.MIN))
+    with Locations((-clampHalfW, -30.0, botZ)):
+        Box(2.0 * clampHalfW, 60.0, topZ - botZ, align=(Align.MIN, Align.MIN, Align.MIN))
     fillet(clampBlockBuilder.edges().filter_by(Axis.Z), radius=4.0)
 clampBlock = clampBlockBuilder.part
 
@@ -100,10 +104,10 @@ spineBody = spineBuilder.part
 
 # 3. Union Main Clamp Block, Arm, Dorsal Spine, and Upward Riser Peg, then Cut All Features
 cornerCoords = [
-    (-35.0, -22.5, 0.0),
-    (35.0, -22.5, 0.0),
-    (-35.0, 22.5, 0.0),
-    (35.0, 22.5, 0.0),
+    (-clampHalfW + 15.0, -22.5, 0.0),   # M4 bolt positions inset from block edge (30-15=15mm offset)
+    (clampHalfW - 15.0, -22.5, 0.0),
+    (-clampHalfW + 15.0, 22.5, 0.0),
+    (clampHalfW - 15.0, 22.5, 0.0),
 ]
 
 headSeatZMain = topZ - 9.25              # +14.00mm
@@ -136,10 +140,11 @@ with BuildPart() as lClampBuilder:
     with Locations((-50.0, -35.0, -clampGap / 2.0)):
         Box(100.0, 70.0, clampGap, align=(Align.MIN, Align.MIN, Align.MIN), mode=Mode.SUBTRACT)
 
-    # 5B. Split Part 1A from Part 1B
-    with Locations((-25.0 - (clampGap / 2.0), 20.0 - clampGap, -clampGap / 2.0)):
+    # 5B. Split Part 1A from Part 1B (split plane at X = clampHalfW - 20mm)
+    splitXPos = clampHalfW - 20.0
+    with Locations((-clampHalfW - 15.0 - (clampGap / 2.0), 20.0 - clampGap, -clampGap / 2.0)):
         Box(
-            50.0 + clampGap,
+            2.0 * clampHalfW + 30.0 + clampGap,
             35.0 - (20.0 - clampGap),
             spineBotZ - (-clampGap / 2.0),
             align=(Align.MIN, Align.MIN, Align.MIN),
@@ -183,14 +188,12 @@ with BuildPart() as lClampBuilder:
                 mode=Mode.SUBTRACT,
             )
 
-        # Side-Insertion Nut Slot
-        xOuter = -50.0 if bx < 0.0 else 50.0
-        xMin = xOuter if bx < 0.0 else bx
-        xMax = bx if bx < 0.0 else xOuter
+        # Side-Insertion Nut Slot (extends from bolt to clamp block edge)
+        slotXLen = 15.0  # Distance from bolt center to side of block
 
-        with Locations((xMin, by - (m4Nut / 2.0), nutFloorZMain)):
+        with Locations((bx - slotXLen if bx < 0.0 else bx, by - (m4Nut / 2.0), nutFloorZMain)):
             Box(
-                xMax - xMin,
+                2 * slotXLen,
                 m4Nut,
                 nutSlotH,
                 align=(Align.MIN, Align.MIN, Align.MIN),
@@ -228,7 +231,7 @@ with BuildPart() as lClampBuilder:
 
     with Locations((0.0, spineBoltY - (m4Nut / 2.0), nutFloorZDorsal)):
         Box(
-            50.0,
+            clampHalfW + 5.0,   # Extended slot for narrow block
             m4Nut,
             nutSlotH,
             align=(Align.MIN, Align.MIN, Align.MIN),
