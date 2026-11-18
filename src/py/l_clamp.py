@@ -28,15 +28,13 @@ spineBoltY = seatFrontY - 20.0                   # 147.75mm (20mm in front of ri
 
 nutCircumradius = m4Nut / (2.0 * math.cos(math.radians(30.0)))
 
-
-def edgeAtPoint(shapeObj: Shape, ptCoords: tuple[float, float, float], tolVal: float = 1e-2) -> Edge:
-    """Finds the single edge on shapeObj passing through ptCoords (replicates qContainsPoint)."""
-    targetVec = Vector(*ptCoords)
-    for edgeItem in shapeObj.edges():
-        if edgeItem.distance_to(targetVec) < tolVal:
+def edgeAtPoint(partObj: Part, ptCoords: tuple[float, float, float], tolVal: float = 1e-2) -> Edge:
+    """Finds the single edge on partObj passing through ptCoords (replicates qContainsPoint)."""
+    targetVertex = Vertex(*ptCoords)
+    for edgeItem in partObj.edges():
+        if edgeItem.distance_to(targetVertex) < tolVal:
             return edgeItem
     raise ValueError(f"No edge found near point {ptCoords}")
-
 
 # 1. Solid 90mm Wide Clamp Block (Filleted on Z-parallel edges while pristine)
 with BuildPart() as clampBlockBuilder:
