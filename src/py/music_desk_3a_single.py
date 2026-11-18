@@ -114,8 +114,28 @@ with BuildPart() as part3aBuilder:
             mode=Mode.ADD,
         )
 
-    # 4 & 5. Round the Outer Vertical Edges of the Unified Shell!
-    fillet(part3aBuilder.edges().filter_by(Axis.Z), radius=4.5)
+    # 4 & 5. Unify coplanar side faces, then round outer vertical edges
+    part3aBuilder.part = part3aBuilder.part.clean()
+
+    # After .clean(), the Z-edges on the unified shell are:
+    # - Front lip outer corners at Y = cy - 59mm (lip is 5mm thick -> max symmetric fillet < 2.5mm)
+    # - Front lip inner corners at Y = cy - 54mm
+    # - Upper backplate front corners at Y = cy - 6mm (Z = 16..180mm, plate is 6mm thick -> max symmetric fillet < 3.0mm)
+    # - Upper backplate rear corners at Y = cy (Z = 50..180mm)
+    # - Lower rear spine corners at Y = cy + 6mm (Z = 0..50mm, total thickness is 12mm -> easily takes 4.5mm!)
+
+    # To fillet the rear spine vertical edges (Y = cy + 6mm) at 4.5mm and upper/front vertical edges at 2.4mm:
+    zEdges = part3aBuilder.edges().filter_by(Axis.Z)
+    spineZEdges = [e for e in zEdges if abs(e.center().Y - (cy + 6.0)) < 0.1]
+    otherOuterZEdges = [
+        e for e in zEdges
+        if abs(e.center().Y - (cy - 59.0)) < 0.1
+        or abs(e.center().Y - (cy - 6.0)) < 0.1
+        or abs(e.center().Y - cy) < 0.1
+    ]
+
+    fillet(spineZEdges, radius=4.5)
+    fillet(otherOuterZEdges, radius=2.4)
 
     # 6. Two Vertical Female Dovetail Guide Housings (X = +/-75mm, Z = 50mm to 180mm)
     for rx in railXOffsets:
@@ -153,7 +173,7 @@ with BuildPart() as part3aBuilder:
             Polygon(*femPts, align=None)
     extrude(femSlideSk.sketch, amount=132.0, mode=Mode.SUBTRACT)
 
-    # 8C. Cut Side Detent Pin Holes (Y = cy + 9.5mm, Z = 160mm)
+    # 8C. Cut Side Holes (Y = cy + 9.5mm, Z = 160mm)
     for rx in railXOffsets:
         with Locations(Plane(origin=(cx + rx - guideHalfW - 2.0, cy + 9.5, 160.0), z_dir=(1, 0, 0))):
             Cylinder(
