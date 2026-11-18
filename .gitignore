@@ -3,3 +3,5 @@
 .env.*
 !.env.example
 onshape_config.json
+.claude/
+__pycache__/
