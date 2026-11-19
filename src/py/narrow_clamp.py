@@ -25,7 +25,9 @@ clampHalfW = 30.0                                # Half-width of vertical clamp 
 
 halfTube = tubeSize / 2.0                        # 15.25mm
 topZ = halfTube + 8.0                            # +23.25mm
-botZ = -35.0                                     # -35.00mm
+
+# botZ - lower Z position of clamp block and arm bottom
+botZ = -(halfTube + 8.0)                       # -23.25mm (reduced from -35.0 for material savings)
 
 # Peg center is at Y = 15.25 + 155 + 12.5 = 182.75mm
 pegCenterY = halfTube + backReach + 12.5         # 182.75mm
@@ -53,13 +55,19 @@ clampBlock = clampBlockBuilder.part
 
 
 # 2. Profiled Extension Arm (Part 1B) with Swept Curved Bottom Keel
-curveStartY = armEndY - 45.0
+# Given: botZ, keelArcRad, armEndY -> compute curveStartY and aMid dynamically
+# For the ThreePointArc(a2, aMid, a3):
+# - The arc passes through a2=(curveStartY, botZ), aMid, and a3=(armEndY, 10.0)
+# Here, we constrain the arc to be horizontally tangent at a2 and vertically tangent at a3.
+# Therefore, the arc is 1/4 circle with easy to calculate radius, etc.
+a3 = (armEndY, 10.0)
+aRad = (a3[1] - botZ)
+curveStartY = armEndY - aRad;
+aMid = (curveStartY + aRad / math.sqrt(2), 10.0 - (aRad / math.sqrt(2)))
+
 a1 = (arm_halfW, botZ)
 a2 = (curveStartY, botZ)
-a3 = (armEndY, 10.0)
 a4 = (arm_halfW, 10.0)
-aMid = (curveStartY + 31.0, botZ + 13.0)
-
 with BuildPart() as armBuilder:
     armPlane = Plane(origin=(-arm_halfW, 0.0, 0.0), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
     with BuildSketch(armPlane) as armProfileSk:
