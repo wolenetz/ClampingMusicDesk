@@ -147,8 +147,8 @@ with BuildPart() as lClampBuilder:
     extrude(tubeSketch.sketch, amount=100.0, mode=Mode.SUBTRACT)
 
     # 5A. Horizontal Compression Gap at Z = 0mm (split clamp TOP from BOTTOM)
-    with Locations((-50.0, -35.0, -clampGap / 2.0)):
-        Box(100.0, 70.0, clampGap, align=(Align.MIN, Align.MIN, Align.MIN), mode=Mode.SUBTRACT)
+    with Locations((-clampHalfW, -clampHalfD, -clampGap / 2.0)):
+        Box(clampHalfW * 2, clampHalfD * 2, clampGap, align=(Align.MIN, Align.MIN, Align.MIN), mode=Mode.SUBTRACT)
 
     # 5B. Small Y-notch into front-top of lower arm (Part 1B) where it meets upper clamp backside (Part 1A)
     # Position: just past clamp block front edge at Y=30 (+clampGap/2 for gap), small X-width to match arm,
