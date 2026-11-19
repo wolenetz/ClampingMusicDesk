@@ -23,6 +23,8 @@ arm_halfW = 15.0                                 # Half-width of extension arm (
 # This narrow version uses clampHalfW=30mm for a total of 60mm wide clamp block
 clampHalfW = 30.0                                # Half-width of vertical clamp block (narrow: 30mm vs standard 45mm)
 
+clampHalfD = 30.0                                # Half-depth of vertical clamp block
+
 halfTube = tubeSize / 2.0                        # 15.25mm
 topZ = halfTube + 8.0                            # +23.25mm
 
@@ -48,8 +50,8 @@ def edgeAtPoint(partObj: Part, ptCoords: tuple[float, float, float], tolVal: flo
 
 # 1. Solid Clamp Block (Filleted on Z-parallel edges while pristine)
 with BuildPart() as clampBlockBuilder:
-    with Locations((-clampHalfW, -30.0, botZ)):
-        Box(2.0 * clampHalfW, 60.0, topZ - botZ, align=(Align.MIN, Align.MIN, Align.MIN))
+    with Locations((-clampHalfW, -clampHalfD, botZ)):
+        Box(2.0 * clampHalfW, 2.0 * clampHalfD, topZ - botZ, align=(Align.MIN, Align.MIN, Align.MIN))
     fillet(clampBlockBuilder.edges().filter_by(Axis.Z), radius=4.0)
 clampBlock = clampBlockBuilder.part
 
@@ -65,9 +67,9 @@ aRad = (a3[1] - botZ)
 curveStartY = armEndY - aRad;
 aMid = (curveStartY + aRad / math.sqrt(2), 10.0 - (aRad / math.sqrt(2)))
 
-a1 = (arm_halfW, botZ)
+a1 = (clampHalfD, botZ)
 a2 = (curveStartY, botZ)
-a4 = (arm_halfW, 10.0)
+a4 = (clampHalfD, 10.0)
 with BuildPart() as armBuilder:
     armPlane = Plane(origin=(-arm_halfW, 0.0, 0.0), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
     with BuildSketch(armPlane) as armProfileSk:
@@ -150,13 +152,13 @@ with BuildPart() as lClampBuilder:
 
     # 5B. Small Y-notch into front-top of lower arm (Part 1B) where it meets upper clamp backside (Part 1A)
     # Position: just past clamp block front edge at Y=30 (+clampGap/2 for gap), small X-width to match arm,
-    # Z-height from Z=0 up toward top of lower arm section (~+11mm below spine bottom)
+    # Z-height from Z=-clampGap/2 up toward top of lower arm section (~+11mm below spine bottom)
     # This creates separation without cutting into main clamp block area (-30 to +30 in Y)
-    with Locations((-arm_halfW - (clampGap / 2.0), 35.0, 0.0)):
+    with Locations((-arm_halfW, 35.0, -clampGap / 2.0)):
         Box(
-            2 * arm_halfW + clampGap,          # X-width: matches arm width (~32mm from -16 to +16)
+            2 * arm_halfW,
             clampGap,                            # Small Y-depth (only ~2mm notch into front-top of lower arm)
-            spineBotZ - 0.0,                     # Z-height from Z=0 up toward top of lower arm section (~+11mm)
+            spineBotZ - (-clampGap / 2.0),
             align=(Align.MIN, Align.CENTER, Align.MIN),
             mode=Mode.SUBTRACT,
         )
