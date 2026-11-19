@@ -278,6 +278,6 @@ lClampAssembly = Compound(
 )
 
 if __name__ == "__main__":
-    export_step(lClampAssembly, "part1a_1b_narrow_lClamp_v4.step")
-    export_stl(part1a, "part1a_topSaddleCapSpine.stl")
-    export_stl(part1b, "part1b_lowerCradleArmV4.stl")
+    export_step(lClampAssembly, "part1a_1b_narrow_lClamp.step")
+    export_stl(part1a, "part1a_narrow_topSaddleCapSpine.stl")
+    export_stl(part1b, "part1b_narrow_lowerCradleArm.stl")
