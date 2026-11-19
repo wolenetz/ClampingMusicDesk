@@ -154,12 +154,12 @@ with BuildPart() as lClampBuilder:
     # Position: just past clamp block front edge at Y=30 (+clampGap/2 for gap), small X-width to match arm,
     # Z-height from Z=-clampGap/2 up toward top of lower arm section (~+11mm below spine bottom)
     # This creates separation without cutting into main clamp block area (-30 to +30 in Y)
-    with Locations((-arm_halfW, 35.0, -clampGap / 2.0)):
+    with Locations((-arm_halfW, clampHalfD, -clampGap / 2.0)):
         Box(
             2 * arm_halfW,
             clampGap,                            # Small Y-depth (only ~2mm notch into front-top of lower arm)
             spineBotZ - (-clampGap / 2.0),
-            align=(Align.MIN, Align.CENTER, Align.MIN),
+            align=(Align.MIN, Align.MIN, Align.MIN),
             mode=Mode.SUBTRACT,
         )
 
