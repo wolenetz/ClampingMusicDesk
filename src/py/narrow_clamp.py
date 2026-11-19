@@ -19,6 +19,11 @@ backReach = 155.0
 # This narrow version uses arm_halfW=15mm for a total of 30mm wide arm
 arm_halfW = 15.0                                 # Half-width of extension arm (narrow version: 15mm vs standard 25mm)
 
+# Wider rear pad around riser seat with top surface flush on Part 1B rear arm (Z = 10.0mm)
+riserPadHalfW = 24.0  # 48mm total width at rear riser seat
+riserPadTopZ = 10.0   # Same Z plane as Part 1B rear arm top (below spineBotZ = 11.0mm)
+riserPadBotZ = 4.0    # 6mm thick pad well above Z = +/-1.0mm split gap
+
 # Clamp block X-half width parameter - narrower than original l_clamp.py (which uses clampHalfW=45mm, total 90mm)
 # This narrow version uses clampHalfW=30mm for a total of 60mm wide clamp block
 clampHalfW = 30.0                                # Half-width of vertical clamp block (narrow: 30mm vs standard 45mm)
@@ -95,6 +100,65 @@ with BuildPart() as armBuilder:
     fillet(armFilletEdges, radius=5.0)
 armBody = armBuilder.part
 
+
+# 2A-Pad. Smooth Widened Rear Pad on Part 1B (top at Z = 10.0mm, well below dorsal spine Z >= 11.0mm)
+padStartY = seatFrontY - 12.0  # Starts smoothly ahead of the riser seat (155.75mm), behind clamp block
+padLenY = armEndY - padStartY
+padH = riserPadTopZ - riserPadBotZ
+taperLenY = 12.0  # Smooth lead-in taper from arm_halfW (15mm) to riserPadHalfW (24mm)
+taperMidY = taperLenY / 2.0 + padStartY
+taperMidX = (riserPadHalfW - arm_halfW) / 2.0 + arm_halfW
+
+with BuildPart() as riserPadBuilder:
+    # Smooth XY profile transitioning from arm_halfW into riserPadHalfW with a curved rear corner
+    padPlane = Plane(origin=(0.0, 0.0, riserPadBotZ), x_dir=(1, 0, 0), z_dir=(0, 0, 1))
+    with BuildSketch(padPlane) as padSk:
+        with BuildLine():
+            Line((-arm_halfW, padStartY), (-riserPadHalfW, padStartY + taperLenY))
+            Line((-riserPadHalfW, padStartY + taperLenY), (-riserPadHalfW, armEndY - 5.0))
+            ThreePointArc(
+                (-riserPadHalfW, armEndY - 5.0),
+                (-riserPadHalfW + 5.0 * (1.0 - 1.0 / math.sqrt(2)), armEndY - 5.0 * (1.0 - 1.0 / math.sqrt(2))),
+                (-riserPadHalfW + 5.0, armEndY),
+            )
+            Line((-riserPadHalfW + 5.0, armEndY), (riserPadHalfW - 5.0, armEndY))
+            ThreePointArc(
+                (riserPadHalfW - 5.0, armEndY),
+                (riserPadHalfW - 5.0 * (1.0 - 1.0 / math.sqrt(2)), armEndY - 5.0 * (1.0 - 1.0 / math.sqrt(2))),
+                (riserPadHalfW, armEndY - 5.0),
+            )
+            Line((riserPadHalfW, armEndY - 5.0), (riserPadHalfW, padStartY + taperLenY))
+            Line((riserPadHalfW, padStartY + taperLenY), (arm_halfW, padStartY))
+            Line((arm_halfW, padStartY), (-arm_halfW, padStartY))
+        make_face()
+    extrude(padSk.sketch, amount=padH)
+
+    # Smoothly round the top and bottom perimeters of the pad where it meets the arm and open air
+    padSmoothPts = [
+        (-riserPadHalfW, padStartY + taperLenY + 10.0, riserPadTopZ),
+        (riserPadHalfW, padStartY + taperLenY + 10.0, riserPadTopZ),
+        (0.0, armEndY, riserPadTopZ),
+        (arm_halfW - 1e-2, padStartY, riserPadTopZ),
+        (-arm_halfW + 1e-2, padStartY, riserPadTopZ),
+        (arm_halfW - 2, padStartY, riserPadTopZ),
+        (-arm_halfW + 2, padStartY, riserPadTopZ),
+        (-taperMidX, taperMidY, riserPadTopZ),
+        (taperMidX, taperMidY, riserPadTopZ),
+        (-riserPadHalfW, padStartY + taperLenY + 10.0, riserPadBotZ),
+        (riserPadHalfW, padStartY + taperLenY + 10.0, riserPadBotZ),
+        (0.0, armEndY, riserPadBotZ),
+        (arm_halfW - 1e-2, padStartY, riserPadBotZ),
+        (-arm_halfW + 1e-2, padStartY, riserPadBotZ),
+        (arm_halfW - 2, padStartY, riserPadBotZ),
+        (-arm_halfW + 2, padStartY, riserPadBotZ),
+        (-taperMidX, taperMidY, riserPadBotZ),
+        (taperMidX, taperMidY, riserPadBotZ),
+    ]
+    padEdges = [edgeAtPoint(riserPadBuilder.part, pt) for pt in padSmoothPts]
+    fillet(padEdges, radius=2 - 1e-4)
+riserPadBody = riserPadBuilder.part
+
+
 # 2B. Central Dorsal Tension Spine on Part 1A (Y = 20mm to seatFrontY, Z = 11mm to topZ)
 spineBotZ = 10.0 + (clampGap / 2.0)  # +11.00mm
 with BuildPart() as spineBuilder:
@@ -133,6 +197,7 @@ with BuildPart() as lClampBuilder:
     # Union primary bodies
     add(clampBlock)
     add(armBody, mode=Mode.ADD)
+    add(riserPadBody, mode=Mode.ADD)
     add(spineBody, mode=Mode.ADD)
 
     # Solid Upward Riser Peg at Rear End of Arm
