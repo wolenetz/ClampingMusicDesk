@@ -1,11 +1,9 @@
-NOTE: I'm pausing to reflect on whether or not I want to continue down the road of cloud-native CAD automation. I'm
-considering alternatives to do this local-native in tools I haven't used before, to avoid API usage limits/metering/etc.
-
 # **Clamping Music Desk for OnStage Keyboard Stand**
 
 ## Project Overview
 
-A 3D-printed clamping music desk that can be assembled in multiple configurations (single-riser, dual-riser, full/low-profile, extra-tall) to hold sheet music or books. It attaches to an "OnStage" brand keyboard stand and is built from cloud-native CAD platforms.
+A 3D-printed clamping music desk that can be assembled in multiple configurations (single-riser, dual-riser, full/low-profile, extra-tall) to hold sheet music or books. It attaches to an "OnStage" brand keyboard stand.
+CAD model was built interactively with various local and cloud AI tools, targeting cloud OnShape (v1), and currently targeting local native build123d+FreeCad (vNext iterations).
 
 ### Key Technologies
 - **OnShape** – cloud CAD platform with FeatureScript (V1, legacy)
@@ -40,7 +38,9 @@ A 3D-printed clamping music desk that can be assembled in multiple configuration
 ### Prerequisites
 | Tool | Minimum Version | Notes |
 |------|-----------------|-------|
-| **OnShape** | - | Project hosting |
+| **OnShape** | - | V1 rendering and stl exports |
+| **build123d** python | 0.10.0 | vNext step/stl generation |
+| **FreeCAD** | 1.0 | vNext manual visual inspection |
 | **OrcaSlicer** | Latest release | https://github.com/OrcaSlicer/OrcaSlicer |
 | **Prusa CORE One** | – | Ensure firmware is up-to-date |
 | **Git** | 2.x | For cloning and version control |
@@ -59,11 +59,12 @@ Run Python scripts in `src/py/` to generate STEP/STL files, then inspect outputs
 ### Development Workflow (v1 / OnShape)
 1. Create feature branch from `main`
 2. Edit files in `src/fs/` 
-3. Run FeatureScript unit tests with OnShape CLI (TODO, manual review currently)
+3. Run FeatureScript unit tests with OnShape CLI (None created. Manual review.)
 4. Export STL from OnShape
 5. Slice with OrcaSlicer
 6. Print on Prusa CORE One
-7. Commit and submit pull request
+7. Update PrintingGuide.md
+8. Commit and submit pull request
 
 ### Development Workflow (vNext / build123d - WIP)
 1. Create feature branch from `main`
@@ -71,23 +72,16 @@ Run Python scripts in `src/py/` to generate STEP/STL files, then inspect outputs
 3. Run scripts to generate STEP/STL outputs
 4. Inspect generated files for correctness
 5. Slice with OrcaSlicer and print on Prusa CORE One
-6. Commit and submit pull request
-   - Note: Changes to `PrintingGuide.md` will automatically update `PrintingGuide-printables.html` for use in the model description on Printables.com.
-   - _Note: Any such asynchronous changes may require a later pull to get the updated result from GitHub._
+6. Update PrintingGuide.md
 
-## Common Tasks
-### Adding a New Part (v1 / OnShape)
-1. Define new function in `src/fs/*.fs`
-2. Update the set of OnShape feature studio tabs with the src/fs/*.fs
-3. Export STL(s) from OnShape and add to slicer, 3D print updated part(s)
-4. Update PrintingGuide.md
+7. Commit and submit pull request
 
-### Adding a New Part (vNext / build123d - WIP)
-- Define new function in `src/py/*.py`
-- Run script to generate STEP/STL outputs
-- Inspect and slice for printing, then update PrintingGuide.md
+### Printing Guide Note
+- Changes to `PrintingGuide.md` will automatically update `PrintingGuide-printables.html` for use in the model description on Printables.com.
+- Any such asynchronous changes may require a later pull to get the updated result from GitHub.
 
 ## References
+- **build123d 0.10.0 docs** - https://build123d.readthedocs.io/en/v0.10.0/
 - **OnShape FeatureScript Docs** – https://cad.onshape.com/docs/featureScript.html  
 - **OrcaSlicer** – https://github.com/OrcaSlicer/OrcaSlicer
 - **Prusa CORE One Manual** – https://manual.prusa3d.com/
