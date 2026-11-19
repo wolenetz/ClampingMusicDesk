@@ -136,18 +136,20 @@ with BuildPart() as lClampBuilder:
         RectangleRounded(tubeSize, tubeSize, radius=tubeRad)
     extrude(tubeSketch.sketch, amount=100.0, mode=Mode.SUBTRACT)
 
-    # 5A. Horizontal Compression Gap at Z = 0mm
+    # 5A. Horizontal Compression Gap at Z = 0mm (split clamp TOP from BOTTOM)
     with Locations((-50.0, -35.0, -clampGap / 2.0)):
         Box(100.0, 70.0, clampGap, align=(Align.MIN, Align.MIN, Align.MIN), mode=Mode.SUBTRACT)
 
-    # 5B. Split Part 1A from Part 1B (split plane at X = clampHalfW - 20mm)
-    splitXPos = clampHalfW - 20.0
-    with Locations((-clampHalfW - 15.0 - (clampGap / 2.0), 20.0 - clampGap, -clampGap / 2.0)):
+    # 5B. Small Y-notch into front-top of lower arm (Part 1B) where it meets upper clamp backside (Part 1A)
+    # Position: just past clamp block front edge at Y=30 (+clampGap/2 for gap), small X-width to match arm,
+    # Z-height from Z=0 up toward top of lower arm section (~+11mm below spine bottom)
+    # This creates separation without cutting into main clamp block area (-30 to +30 in Y)
+    with Locations((-arm_halfW - (clampGap / 2.0), 35.0, 0.0)):
         Box(
-            2.0 * clampHalfW + 30.0 + clampGap,
-            35.0 - (20.0 - clampGap),
-            spineBotZ - (-clampGap / 2.0),
-            align=(Align.MIN, Align.MIN, Align.MIN),
+            2 * arm_halfW + clampGap,          # X-width: matches arm width (~32mm from -16 to +16)
+            clampGap,                            # Small Y-depth (only ~2mm notch into front-top of lower arm)
+            spineBotZ - 0.0,                     # Z-height from Z=0 up toward top of lower arm section (~+11mm)
+            align=(Align.MIN, Align.CENTER, Align.MIN),
             mode=Mode.SUBTRACT,
         )
 
@@ -266,6 +268,6 @@ lClampAssembly = Compound(
 )
 
 if __name__ == "__main__":
-    export_step(lClampAssembly, "part1a_1b_narrow_lClamp.step")
-    export_stl(part1a, "part1a_topSaddleCapAndSpine.stl")
-    export_stl(part1b, "part1b_lowerCradleNarrowArm.stl")
+    export_step(lClampAssembly, "part1a_1b_narrow_lClamp_v4.step")
+    export_stl(part1a, "part1a_topSaddleCapSpine.stl")
+    export_stl(part1b, "part1b_lowerCradleArmV4.stl")
