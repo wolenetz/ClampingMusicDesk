@@ -28,6 +28,15 @@ import FreeCADGui as Gui
 import Part
 import build123d as bd
 
+import importlib
+import sys
+import types
+def load_bd(module_name: str) -> types.ModuleType:
+    """Import a module by name, or reload it if it is already in sys.modules."""
+    if module_name in sys.modules and sys.modules[module_name] is not None:
+        return importlib.reload(sys.modules[module_name])
+    return importlib.import_module(module_name)
+
 def show_bd(shape, name="Shape", clear_all=False):
     buf = io.BytesIO()
     bd.export_brep(shape, buf)
