@@ -5,7 +5,7 @@
 import sys
 if "/workspace/ClampingMusicDesk/src/py" not in sys.path:
     sys.path.append("/workspace/ClampingMusicDesk/src/py")
-from bd_helpers import show_bd, show_bd_children
+from bd_helpers import show_bd, show_bd_children, load_bd
 """
 # Then, assuming your module containing one or more models is "M", do:
 # import M
