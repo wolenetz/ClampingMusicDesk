@@ -51,6 +51,12 @@ recHalfW = 32.0
 recHeight = 95.0
 baseDepth = 26.0 + (recHeight * math.sin(deskAngleRad))
 
+# Central Wide Female Dovetail Receiver for Upper Desk Cam Lock Engagement
+centralReceiverZStart = 50.0          # Same Z start as vertical slider housings
+centralReceiverH = lowerH - centralReceiverZStart  # ~130mm tall receiver housing
+centralRecHalfNeck = 36.0 + slideTol   # Neck half-width to fit wide male dovetail (~72mm total)
+centralRecHalfWide = 43.0 + slideTol   # Wide face half-width to flare with male dovetail (~86mm total)
+
 wedgePts = [
     (0.0, 0.0),                                                                 # w1
     (baseDepth, 0.0),                                                           # w2
@@ -154,6 +160,18 @@ with BuildPart() as part3aBuilder:
         Polygon(*wedgePts, align=None)
     extrude(wedgeSketch.sketch, amount=recHalfW * 2.0, mode=Mode.ADD)
 
+    # 7B. Central Vertical Female Dovetail Receiver for Wide Upper Desk Dovetail (X = 0mm)
+    # Positioned forward of angled riser block to avoid interference with wedge housing
+    centralRecDepth = guideDepth + 4.0  # Slightly deeper than side housings for clearance
+    with Locations((cx - recHalfW, cy, centralReceiverZStart)):
+        Box(
+            recHalfW * 2 + 10.0,   # Width slightly larger than angled riser block (64mm) + margin
+            centralRecDepth,
+            centralReceiverH,
+            align=(Align.MIN, Align.MIN, Align.MIN),
+            mode=Mode.ADD,
+        )
+
     # 8A. Cut Center Angled Riser Female Dovetail
     doveCutPlane = Plane(origin=cornerOrigin, x_dir=(1, 0, 0), z_dir=uSlide)
     with BuildSketch(doveCutPlane) as doveCutSketch:
@@ -173,7 +191,19 @@ with BuildPart() as part3aBuilder:
             Polygon(*femPts, align=None)
     extrude(femSlideSk.sketch, amount=132.0, mode=Mode.SUBTRACT)
 
-    # 8C. Cut Side Holes (Y = cy + 9.5mm, Z = 160mm)
+    # 8C. Cut Central Wide Female Dovetail Receiver (Z = 50mm to ~182mm)
+    centralDovePlane = Plane(origin=(cx, cy, centralReceiverZStart), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
+    with BuildSketch(centralDovePlane) as centralDoveSk:
+        centralDovePts = [
+            (-centralRecHalfWide, sYOut),   # Wide face at front Y position
+            (+centralRecHalfWide, sYOut),
+            (+centralRecHalfNeck, sYIn),    # Neck at rear Y position
+            (-centralRecHalfNeck, sYIn),
+        ]
+        Polygon(*centralDovePts, align=None)
+    extrude(centralDoveSk.sketch, amount=132.0, mode=Mode.SUBTRACT)
+
+    # 8D. Cut Side Holes (Y = cy + 9.5mm, Z = 160mm)
     for rx in railXOffsets:
         with Locations(Plane(origin=(cx + rx - guideHalfW - 2.0, cy + 9.5, 160.0), z_dir=(1, 0, 0))):
             Cylinder(
