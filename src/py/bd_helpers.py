@@ -32,6 +32,10 @@ import build123d as bd
 import importlib
 import sys
 import types
+# use this one like so:
+# modA = load_bd('modA')
+#...
+# show_bd_children(modA.modAAssemblyName) # for example...
 def load_bd(module_name: str) -> types.ModuleType:
     """Import a module by name, or reload it if it is already in sys.modules."""
     if module_name in sys.modules and sys.modules[module_name] is not None:
