@@ -26,6 +26,7 @@ CAD model was built interactively with various local and cloud AI tools, targeti
 │   ├── narrow_clamp.py
 │   ├── music_desk_3a_single.py
 │   └── ...
+├── src/py/ai_scratchpad/  # Build123d verification artifacts only (.png, .step exports)
 ├── .github/workflows/  # GitHub Actions workflows
 │   └── convert-printing-guide.yml  # Converts PrintingGuide.md to Printables HTML
 ├── PrintingGuide.md    # Print & assembly guide (automatically updates PrintingGuide-printables.html for Printables.com)
@@ -69,12 +70,14 @@ Run Python scripts in `src/py/` to generate STEP/STL files, then inspect outputs
 ### Development Workflow (vNext / build123d - WIP)
 1. Create feature branch from `main`
 2. Edit Python files in `src/py/`
-3. Run scripts to generate STEP/STL outputs
-4. Inspect generated files for correctness
+3. Run scripts to generate STEP/STL outputs → placed in `ai_scratchpad/`
+4. Inspect generated files for correctness (rendered PNGs and STEP exports)
 5. Slice with OrcaSlicer and print on Prusa CORE One
 6. Update PrintingGuide.md
 
 7. Commit and submit pull request
+
+**Note:** Build123d verification artifacts (*.png, *.step) should be placed in `src/py/ai_scratchpad/`. Only Python source files belong directly in `src/py/`.
 
 ### Printing Guide Note
 - Changes to `PrintingGuide.md` will automatically update `PrintingGuide-printables.html` for use in the model description on Printables.com.
