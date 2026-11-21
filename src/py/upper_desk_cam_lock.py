@@ -14,10 +14,13 @@ cx = 835.0
 cy = 0.0
 yokeH = 14.0
 
-inHalfW = 16.25
-outHalfW = 20.75
-earOutX = 9.0
-slotHalfX = 5.25
+# Updated for central wide dovetail engagement:
+# Inner span clears the ~70mm neck width of the new central male dovetail (with clearance)
+inHalfW = 36.0   # 72mm inner span - just wider than central dovetail neck (~70mm)
+outHalfW = 42.0  # 84mm outer arms for structural rigidity when wedging cam lock tight
+
+earOutX = 15.0   # Wider rear ear span to accommodate M3x20mm axle + nut assembly
+slotHalfX = 5.25 # Cam lever slot (unchanged - still fits 9.8mm thick cam)
 holeZ = 8.5
 
 # =========================================================================
