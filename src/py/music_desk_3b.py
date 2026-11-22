@@ -107,34 +107,21 @@ with BuildPart() as part3bBuilder:
     extrude(railSketch.sketch, amount=deskW - (2.0 * railInset), mode=Mode.ADD)
 
     # 4. Rear 45-Degree Micro-Groove Indexing Rack for Central Dovetail ONLY
-    # V-grooves cut into rear face of central wide doveetail at X=cx (global X=500mm)
-    # Side runners at X = +/-75mm remain smooth for backward compatibility
-    gDepth = 0.65          # Groove depth in mm
-    gPitch = 2.5           # Pitch between groove centers in mm
-    zStart = 10.0          # Start Z height from bottom of runners
-    zEnd = 122.5           # End Z height
+    # This provides positive engagement points for the single central cam lock
+    groovePlane = Plane(origin=(cx, cy, runnerBotZ), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
+    with BuildSketch(groovePlane) as grooveSk:
+        for g in range(45):
+            gz = runnerBotZ + 10.0 + (g * 2.5)
+            # Grooves only on central dovetail rear face - indexed around X=0
+            groovePts = [
+                (-centralHalfNeck, gz - gDepth - 0.5),   # gp1 left outer
+                (+centralHalfNeck, gz - gDepth - 0.5),   # gp2 right outer
+                (0.0, gz),                               # gp3 center tip
+            ]
+            Polygon(*groovePts, align=None)
+    extrude(grooveSk.sketch, amount=deskW, mode=Mode.SUBTRACT)
 
-    with BuildPart() as grooveCuts:
-        for iz in range(int((zEnd - zStart) / gPitch) + 1):
-            zPos = zStart + iz * gPitch
-
-            # Position at rear face of doveetails (Y=mYBack), centered on X=cx (central doveetail only!)
-            with Locations((cx, mYBack, zPos)):
-                vGrooveWidth = gDepth * 2.0  # ~1.3mm total width for V-groove
-
-                # Box cut: extend NEGATIVE Y from rear face INTO doveetail material
-                # Align MAX in Y means box extends negative direction from location (toward front)
-                Box(
-                    vGrooveWidth,      # X width of groove opening
-                    gDepth * 3.0,      # Y length extending into doveetail
-                    gDepth * 1.5,      # Z height of groove feature
-                    align=(Align.CENTER, Align.MAX, Align.CENTER),
-                )
-
-    # Subtract groove cuts from base part to create indexing rack on central dovetail only
-    part3bBuilder.part = (part3bBuilder.part - grooveCuts.part)
-
-part3b = part3bBuilder.part.fuse()  # Fuse all solids into single compound at end
+part3b = part3bBuilder.part
 part3b.label = "Part 3B - Upper Sliding Music Desk with Central Cam Lock"
 
 if __name__ == "__main__":
