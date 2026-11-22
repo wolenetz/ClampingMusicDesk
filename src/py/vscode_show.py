@@ -1,9 +1,9 @@
 # Use this from vscode to show a build123d object in ocp_vscode extension (assuming you've set that up already)
 
-from ocp_vscode import show, show_object, set_defaults
+from ocp_vscode import show, show_object, set_defaults, Camera
 
 # Optional: set default viewing behavior
-set_defaults(reset_camera=False)
+set_defaults(reset_camera=Camera.CENTER)
 # Send the object(s) to the viewer
 # show(part)
 # Or pass multiple objects with custom names/colors:
