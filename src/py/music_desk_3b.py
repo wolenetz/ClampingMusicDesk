@@ -50,7 +50,7 @@ railPts = [
 # 4 Parameters: Rear 45-Degree Micro-Groove Indexing Rack for Central Dovetail ONLY
 gDepth = 0.65
 yOuter = guideDepth + 0.5         # 14.50mm (groove outer edge)
-centralYTip = centralHalfNeck - gDepth  # Groove tip at central dovetail rear face
+yTip = mYBack - gDepth            # Groove tip at central dovetail rear face
 
 with BuildPart() as part3bBuilder:
     # 1. Upper Music Desk Plate (240mm wide x 6mm thick x 60mm tall, Z = 130mm to 190mm)
@@ -64,8 +64,9 @@ with BuildPart() as part3bBuilder:
     # Round the 4 vertical (Z-parallel) side edges of the 6mm upper plate while pristine
     fillet(part3bBuilder.edges().filter_by(Axis.Z), radius=2.8)
 
-    # 2A. Side Male 4-Point Trapezoid Dovetail Runners (At X = +/-75mm, Z = 0mm to 143mm)
-    # These remain smooth - NO indexing grooves for backward compatibility
+    # 2A. Dual Male 4-Point Trapezoid Dovetail Runners (At X = +/-75mm, Z = 0mm to 143mm)
+    # These are no longer notched, but are kept for nor for backward compatibility
+    # and to maybe help stability.
     runnerPlane = Plane(origin=(cx, cy, runnerBotZ), x_dir=(1, 0, 0), z_dir=(0, 0, 1))
     with BuildSketch(runnerPlane) as maleSlideSk:
         for rx in railXOffsets:
@@ -101,25 +102,31 @@ with BuildPart() as part3bBuilder:
             )
 
     # 3. Part 4 Horizontal Clamp Accessory Rail on Top Back of Part 3B (Z = 150mm to 178mm)
-    railPlaneSketch = Plane(origin=(cx - halfW + railInset, cy, 0.0), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
-    with BuildSketch(railPlaneSketch) as railSketch:
+    railPlane = Plane(origin=(cx - halfW + railInset, cy, 0.0), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
+    with BuildSketch(railPlane) as railSketch:
         Polygon(*railPts, align=None)
     extrude(railSketch.sketch, amount=deskW - (2.0 * railInset), mode=Mode.ADD)
 
     # 4. Rear 45-Degree Micro-Groove Indexing Rack for Central Dovetail ONLY
     # This provides positive engagement points for the single central cam lock
-    groovePlane = Plane(origin=(cx, cy, runnerBotZ), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
+    # Upper cam lock lever thickness is 9.8mm (camThick) when designing this, but
+    # let's allow for a potentially wider cam lock: the minimum of (2*centralHalfNeck) or
+    # 30mm.
+    grooveHalfWidth = min(15.0, centralHalfNeck)
+    groovePlane = Plane(origin=(cx - grooveHalfWidth, cy, 0.0), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
     with BuildSketch(groovePlane) as grooveSk:
         for g in range(45):
+            # TODO: here and in cam lock lever, change the grip pitch to be something larger and deeper to get
+            #       a better lock/fit. 2.5 and gDepth need adjusting here and similar adjustment in upper cam lock lever.
             gz = runnerBotZ + 10.0 + (g * 2.5)
             # Grooves only on central dovetail rear face - indexed around X=0
             groovePts = [
-                (-centralHalfNeck, gz - gDepth - 0.5),   # gp1 left outer
-                (+centralHalfNeck, gz - gDepth - 0.5),   # gp2 right outer
-                (0.0, gz),                               # gp3 center tip
+                (yOuter, gz - gDepth - 0.5),
+                (yTip, gz),
+                (yOuter, gz - gDepth + 0.5),
             ]
             Polygon(*groovePts, align=None)
-    extrude(grooveSk.sketch, amount=deskW, mode=Mode.SUBTRACT)
+    extrude(grooveSk.sketch, amount=2 * grooveHalfWidth, mode=Mode.SUBTRACT)
 
 part3b = part3bBuilder.part
 part3b.label = "Part 3B - Upper Sliding Music Desk with Central Cam Lock"
