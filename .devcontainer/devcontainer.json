@@ -1,0 +1,23 @@
+{
+  "name": "FreeCAD + build123d",
+  "dockerComposeFile": "../../cad-stack/docker-compose.yml",
+  "service": "freecad-gui",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "none",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-python-envs",
+        "bernhard-42.ocp-cad-viewer@4.3.0"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/opt/conda/envs/cad/bin/python",
+        "python-envs.terminal.autoActivationType": "shellStartup",
+        "python.analysis.extraPaths": [
+          "/opt/conda/envs/cad/lib"
+        ]
+      }
+    }
+  }
+}
