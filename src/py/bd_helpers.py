@@ -1,3 +1,5 @@
+# Don't use this unless you're in FreeCAD's python panel.
+# If intending to debug using vscode with ocp_vscode, instead use vscode_show.py script
 # To use this, import it into your freecad 1.0 python panel.
 #
 # Helpful tip: 
