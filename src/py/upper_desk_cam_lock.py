@@ -19,9 +19,11 @@ yokeH = 14.0
 inHalfW = 40.5   # 81mm inner span - just wider than central dovetail neck (~80mm)
 outHalfW = 46.0  # 92mm outer arms for structural rigidity when wedging cam lock tight
 
-earOutX = 15.0   # Wider rear ear span to accommodate M3x20mm axle + nut assembly
-camThick = 22.0  # Should be no larger than upper desk's grooveHalfWidth (26.95mm) minus some tolerance
+# The following should allow the cam to fit snugly in the slot and be fastened with m3x30mm and inset nut:
+earOutX = 15.0   # 30mm face-to-face. nut will be inset
+camThick = 19.0  # Should be no larger than upper desk's grooveHalfWidth (26.95mm) minus some tolerance
 slotHalfX = camThick / 2 + 0.15 # Cam lever slot in which the cam should fit snugly
+
 holeZ = 8.5
 
 # =========================================================================
@@ -37,8 +39,8 @@ with BuildPart() as part5aBuilder:
             (-slotHalfX, 14.2),
             (-slotHalfX, 25.0),
             (-earOutX, 25.0),
-            (-earOutX, 18.5),
-            (-outHalfW, 14.2),
+            (-earOutX, 17.3),
+            (-outHalfW, 17.3),
         ]
         Polygon(*leftHalfPts, align=None)
     extrude(amount=yokeH)
@@ -63,18 +65,18 @@ with BuildPart() as part5aBuilder:
             mode=Mode.SUBTRACT,
         )
 
-    # 4. Cut the 1x M3x20mm rear cam axle hole at Y = 20.0mm, Z = 8.5mm
+    # 4. Cut the 1x M3x30mm rear cam axle hole at Y = 20.0mm, Z = 8.5mm
     with Locations(Plane(origin=(cx, cy + 20.0, holeZ), z_dir=(1, 0, 0))):
         Cylinder(
             radius=m3Clear / 2,
-            height=24.0,
+            height=earOutX * 2,
             align=(Align.CENTER, Align.CENTER, Align.CENTER),
             mode=Mode.SUBTRACT,
         )
 
     # 5. Cut captured M3 Hex Nut Pocket on Right Rear Ear (X = +6.5mm to +10.0mm)
     nutCircumradius = m3Nut / (2 * math.cos(math.radians(30)))
-    nutPlane = Plane(origin=(cx + 6.5, cy + 20.0, holeZ), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
+    nutPlane = Plane(origin=(cx + earOutX - 1.5, cy + 20.0, holeZ), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
     with BuildSketch(nutPlane) as nutSk:
         RegularPolygon(
             radius=nutCircumradius,
@@ -83,7 +85,7 @@ with BuildPart() as part5aBuilder:
             rotation=90.0,
             align=None,
         )
-    extrude(nutSk.sketch, amount=3.5, mode=Mode.SUBTRACT)
+    extrude(nutSk.sketch, amount=5.5, mode=Mode.SUBTRACT) # extrude increased to ease assembling
 
 part5a = part5aBuilder.part
 part5a.label = "Part 5A - Rear Cam-Lock Yoke"
