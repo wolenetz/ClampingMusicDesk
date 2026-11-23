@@ -232,6 +232,13 @@ with BuildPart() as part3aBuilder:
 part3a = part3aBuilder.part
 part3a.label = "Part 3A-Single - Single Riser Lower Music Desk"
 
+# TODO
+# part3aDual = part3aDualBuilder.part
+# part3aDual.label = "Part 3A-Dual - Dual Riser Lower Music Desk"
+
 if __name__ == "__main__":
     export_step(part3a, "part3a_lowerStationaryMusicDesk.step")
     export_stl(part3a, "part3a_lowerStationaryMusicDesk.stl")
+    # TODO
+    # export_step(part3aDual, "part3aDual_dualRiserLowerMusicDesk.step")
+    # export_stl(part3aDual, "part3aDual_dualRiserLowerMusicDesk.stl")
