@@ -60,7 +60,7 @@ with BuildPart() as part5aBuilder:
     with Locations(Plane(origin=(cx, cy + 9.5, holeZ), z_dir=(1, 0, 0))):
         Cylinder(
             radius=m3Clear / 2,
-            height=50.0,
+            height=outHalfW * 2 + 1.0,
             align=(Align.CENTER, Align.CENTER, Align.CENTER),
             mode=Mode.SUBTRACT,
         )
