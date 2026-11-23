@@ -23,7 +23,7 @@ earOutX = 15.0   # 30mm face-to-face. nut will be inset
 camThick = 19.0  # Should be no larger than upper desk's grooveHalfWidth (26.95mm) minus some tolerance
 slotHalfX = camThick / 2 + 0.15 # Cam lever slot in which the cam should fit snugly
 
-holeZ = 8.5
+holeZ = 12
 yokeH = holeZ * 2
 nutCircumradius = m3Nut / (2 * math.cos(math.radians(30)))
 
