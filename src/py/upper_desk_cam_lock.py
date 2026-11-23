@@ -131,7 +131,11 @@ with BuildPart() as part5bBuilder:
     # 1. Extrude cam lever profile (Z = 0 to 9.8mm)
     with BuildSketch(Plane(origin=(lcx, lcy, 0), x_dir=(1, 0, 0), z_dir=(0, 0, 1))) as camSk:
         Polygon(*camPts, align=None)
+        # fillet the handle corners and the top back of locked handle
+        filletVerts = [v for v in camSk.vertices() if v.Y == -26.0 or v.X == 9.5]
+        fillet(filletVerts, radius=1.5)
     extrude(amount=camThick)
+
 
     # 2. Cut M3 axle pivot hole through cam center (lcx, lcy)
     with Locations((lcx, lcy, -1.0)):
