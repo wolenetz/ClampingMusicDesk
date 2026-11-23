@@ -149,11 +149,15 @@ with BuildPart() as part3aBuilder:
     fillet(otherOuterZEdges, radius=2.4)
 
     # 6. Two Vertical Female Dovetail Guide Housings (X = +/-75mm, Z = 50mm to 180mm)
+    # Modified to be less deep in Y dimension, to give clearance for assembling the
+    # C-clamp for central dovetail, and to reduce material usage while still holding
+    # part of the upper desk LR male dovetails for stability.
+    thinnerLRGuideDepth = guideDepth - 6 # Note still must leave room for low-Y side of guide cutout
     for rx in railXOffsets:
         with Locations((cx + rx - guideLRHalfW, cy, guideBotZ)):
             Box(
                 2.0 * guideLRHalfW,
-                guideDepth,
+                thinnerLRGuideDepth,
                 guideTopZ,
                 align=(Align.MIN, Align.MIN, Align.MIN),
                 mode=Mode.ADD,
@@ -203,14 +207,15 @@ with BuildPart() as part3aBuilder:
     extrude(femSlideSk.sketch, amount=132.0, mode=Mode.SUBTRACT)
 
     # 8D. Cut LR Guide Side Holes for older upper desk and clamp design back-compat (Y = cy + 9.5mm, Z = 160mm)
-    for rx in railXOffsets:
-        with Locations(Plane(origin=(cx + rx - guideLRHalfW - 2.0, cy + 9.5, 160.0), z_dir=(1, 0, 0))):
-            Cylinder(
-                radius=m3Clear / 2.0,
-                height=2.0 * (guideLRHalfW + 2.0),
-                align=(Align.CENTER, Align.CENTER, Align.MIN),
-                mode=Mode.SUBTRACT,
-            )
+    if thinnerLRGuideDepth > cy + 9.5 + m3Clear/2.0 + 2.0: # if enough Y-depth remains, cut holes in LR Side.
+        for rx in railXOffsets:
+            with Locations(Plane(origin=(cx + rx - guideLRHalfW - 2.0, cy + 9.5, 160.0), z_dir=(1, 0, 0))):
+                Cylinder(
+                    radius=m3Clear / 2.0,
+                    height=2.0 * (guideLRHalfW + 2.0),
+                    align=(Align.CENTER, Align.CENTER, Align.MIN),
+                    mode=Mode.SUBTRACT,
+                )
     
     # 8E. Cut Central Guide Side Holes upper desk and clamp design (Y = cy + 9.5mm, Z = 160mm)
     with Locations(Plane(origin=(cx - guideCentralHalfW - 2.0, cy + 9.5, 160.0), z_dir=(1, 0, 0))):
