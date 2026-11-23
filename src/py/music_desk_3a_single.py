@@ -43,19 +43,24 @@ s6 = (yFrontEdge + lipT, shelfT)
 s7 = (-plateT - 4.0, shelfT)
 s8 = (-plateT, shelfT + 4.0)
 
-# 6 & 7 Parameters: Guide Housings & Center Angled Riser Receiver Block
-guideHalfW = 16.0
+# 6 and 6B Parameters: Guide Housings (L/R sliders and central slider,
+# to interface with upper desk 3b)
 guideDepth = 14.0
+guideBotZ = 50.0
+guideTopZ = lowerH - 50.0
+# L/R sliders:
+guideLRHalfW = 16.0
+# Central Wide Female Dovetail Receiver for Upper Desk Cam Lock Engagement
+guideCentralHalfW = 37.0
+centralReceiverZStart = 50.0          # Same Z start as vertical slider housings
+centralRecHalfNeck = 27.0 + slideTol   # Neck half-width to fit wide male dovetail (~72mm total)
+centralRecHalfWide = 30.0 + slideTol   # Wide face half-width to flare with male dovetail (~86mm total)
 
+# 7 Parameters: Center Angled Riser Receiver Block
 recHalfW = 32.0
 recHeight = 95.0
 baseDepth = 26.0 + (recHeight * math.sin(deskAngleRad))
 
-# Central Wide Female Dovetail Receiver for Upper Desk Cam Lock Engagement
-centralReceiverZStart = 50.0          # Same Z start as vertical slider housings
-centralReceiverH = lowerH - centralReceiverZStart  # ~130mm tall receiver housing
-centralRecHalfNeck = 36.0 + slideTol   # Neck half-width to fit wide male dovetail (~72mm total)
-centralRecHalfWide = 43.0 + slideTol   # Wide face half-width to flare with male dovetail (~86mm total)
 
 wedgePts = [
     (0.0, 0.0),                                                                 # w1
@@ -145,14 +150,24 @@ with BuildPart() as part3aBuilder:
 
     # 6. Two Vertical Female Dovetail Guide Housings (X = +/-75mm, Z = 50mm to 180mm)
     for rx in railXOffsets:
-        with Locations((cx + rx - guideHalfW, cy, 50.0)):
+        with Locations((cx + rx - guideLRHalfW, cy, guideBotZ)):
             Box(
-                2.0 * guideHalfW,
+                2.0 * guideLRHalfW,
                 guideDepth,
-                lowerH - 50.0,
+                guideTopZ,
                 align=(Align.MIN, Align.MIN, Align.MIN),
                 mode=Mode.ADD,
             )
+
+    # 6B. Central Vertical Guide Female Dovetail Receiver for Wide Upper Desk Dovetail (X = 0mm)
+    with Locations((cx - guideCentralHalfW, cy, guideBotZ)):
+        Box(
+            guideCentralHalfW * 2,
+            guideDepth,
+            guideTopZ,
+            align=(Align.MIN, Align.MIN, Align.MIN),
+            mode=Mode.ADD,
+        )
 
     # 7. Center Angled Heavy-Duty Riser Receiver Block (64mm wide x 95mm tall housing)
     wedgePlane = Plane(origin=(cx - recHalfW, cy, 0.0), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
@@ -160,17 +175,6 @@ with BuildPart() as part3aBuilder:
         Polygon(*wedgePts, align=None)
     extrude(wedgeSketch.sketch, amount=recHalfW * 2.0, mode=Mode.ADD)
 
-    # 7B. Central Vertical Female Dovetail Receiver for Wide Upper Desk Dovetail (X = 0mm)
-    # Positioned forward of angled riser block to avoid interference with wedge housing
-    centralRecDepth = guideDepth + 4.0  # Slightly deeper than side housings for clearance
-    with Locations((cx - recHalfW, cy, centralReceiverZStart)):
-        Box(
-            recHalfW * 2 + 10.0,   # Width slightly larger than angled riser block (64mm) + margin
-            centralRecDepth,
-            centralReceiverH,
-            align=(Align.MIN, Align.MIN, Align.MIN),
-            mode=Mode.ADD,
-        )
 
     # 8A. Cut Center Angled Riser Female Dovetail
     doveCutPlane = Plane(origin=cornerOrigin, x_dir=(1, 0, 0), z_dir=uSlide)
@@ -178,9 +182,9 @@ with BuildPart() as part3aBuilder:
         Polygon(*doveCutPts, align=None)
     extrude(doveCutSketch.sketch, amount=79.0, mode=Mode.SUBTRACT)
 
-    # 8B. Cut Dual Vertical Slider Female Dovetails (Z = 50mm to 182mm)
-    femSlidePlane = Plane(origin=(cx, cy, 50.0), x_dir=(1, 0, 0), z_dir=(0, 0, 1))
-    with BuildSketch(femSlidePlane) as femSlideSk:
+    # 8B. Cut LR and Central Vertical Slider Female Dovetails (Z = 50mm to 182mm)
+    femaleDovetailSliderGuidePlane = Plane(origin=(cx, cy, guideBotZ), x_dir=(1, 0, 0), z_dir=(0, 0, 1))
+    with BuildSketch(femaleDovetailSliderGuidePlane) as femSlideSk:
         for rx in railXOffsets:
             femPts = [
                 (rx - sHNeck, sYOut),
@@ -189,29 +193,34 @@ with BuildPart() as part3aBuilder:
                 (rx - sHWide, sYIn),
             ]
             Polygon(*femPts, align=None)
-    extrude(femSlideSk.sketch, amount=132.0, mode=Mode.SUBTRACT)
-
-    # 8C. Cut Central Wide Female Dovetail Receiver (Z = 50mm to ~182mm)
-    centralDovePlane = Plane(origin=(cx, cy, centralReceiverZStart), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
-    with BuildSketch(centralDovePlane) as centralDoveSk:
         centralDovePts = [
-            (-centralRecHalfWide, sYOut),   # Wide face at front Y position
-            (+centralRecHalfWide, sYOut),
-            (+centralRecHalfNeck, sYIn),    # Neck at rear Y position
-            (-centralRecHalfNeck, sYIn),
+            (-centralRecHalfNeck, sYOut),
+            (+centralRecHalfNeck, sYOut),
+            (+centralRecHalfWide, sYIn),
+            (-centralRecHalfWide, sYIn),
         ]
         Polygon(*centralDovePts, align=None)
-    extrude(centralDoveSk.sketch, amount=132.0, mode=Mode.SUBTRACT)
+    extrude(femSlideSk.sketch, amount=132.0, mode=Mode.SUBTRACT)
 
-    # 8D. Cut Side Holes (Y = cy + 9.5mm, Z = 160mm)
+    # 8D. Cut LR Guide Side Holes for older upper desk and clamp design back-compat (Y = cy + 9.5mm, Z = 160mm)
     for rx in railXOffsets:
-        with Locations(Plane(origin=(cx + rx - guideHalfW - 2.0, cy + 9.5, 160.0), z_dir=(1, 0, 0))):
+        with Locations(Plane(origin=(cx + rx - guideLRHalfW - 2.0, cy + 9.5, 160.0), z_dir=(1, 0, 0))):
             Cylinder(
                 radius=m3Clear / 2.0,
-                height=2.0 * (guideHalfW + 2.0),
+                height=2.0 * (guideLRHalfW + 2.0),
                 align=(Align.CENTER, Align.CENTER, Align.MIN),
                 mode=Mode.SUBTRACT,
             )
+    
+    # 8E. Cut Central Guide Side Holes upper desk and clamp design (Y = cy + 9.5mm, Z = 160mm)
+    with Locations(Plane(origin=(cx - guideCentralHalfW - 2.0, cy + 9.5, 160.0), z_dir=(1, 0, 0))):
+        Cylinder(
+            radius=m3Clear / 2.0,
+            height=2.0 * (guideCentralHalfW + 2.0),
+            align=(Align.CENTER, Align.CENTER, Align.MIN),
+            mode=Mode.SUBTRACT,
+        )
+            
 
 part3a = part3aBuilder.part
 part3a.label = "Part 3A-Single - Single Riser Lower Music Desk"

@@ -28,8 +28,8 @@ mHNeck = 6.0 - mFitTol            # 5.95mm half-width (11.90mm total neck width)
 mHWide = 9.0 - mFitTol            # 8.95mm half-width (17.90mm total flare width)
 
 # 2A Parameters: Central Wide Male Dovetail for Single Cam Lock Engagement
-centralHalfNeck = 35.0 + mFitTol   # ~35.05mm neck half-width (70.1mm total at rear)
-centralHalfWide = 42.0 + mFitTol   # ~42.05mm wide half-width (84.1mm total at front)
+centralHalfNeck = 27.0 - mFitTol
+centralHalfWide = 30.0 - mFitTol
 
 # 3 Parameters: Horizontal Clamp Accessory Rail on Top Back
 railInset = 3.0
