@@ -25,6 +25,7 @@ camThick = 19.0  # Should be no larger than upper desk's grooveHalfWidth (26.95m
 slotHalfX = camThick / 2 + 0.15 # Cam lever slot in which the cam should fit snugly
 
 holeZ = 8.5
+nutCircumradius = m3Nut / (2 * math.cos(math.radians(30)))
 
 # =========================================================================
 # PART 5A: Rear C-Yoke Bracket
@@ -45,6 +46,18 @@ with BuildPart() as part5aBuilder:
         Polygon(*leftHalfPts, align=None)
     extrude(amount=yokeH)
     mirror(about=Plane.YZ.offset(cx))
+
+    # add extra support for the lever hinge ears
+    with BuildSketch(Plane(origin=(cx, cy, 0), x_dir=(1, 0, 0), z_dir=(0, 0, 1))) as yokeSupportSk:
+        leftSupportPts = [
+            (-outHalfW, 17.3),
+            (-earOutX, 17.3),
+            (-earOutX, 25.0),
+        ]
+        Polygon(*leftSupportPts, align=None)
+    extrude(amount=holeZ-nutCircumradius-0.15)
+    mirror(about=Plane.YZ.offset(cx))
+
 
     # 2. Union the 3.0mm base bridge (X: cx - earOutX to cx + earOutX, Y: cy + 14.2 to cy + 25.0, Z: 0 to 3.0)
     with Locations((cx - earOutX, cy + 14.2, 0.0)):
@@ -75,7 +88,6 @@ with BuildPart() as part5aBuilder:
         )
 
     # 5. Cut captured M3 Hex Nut Pocket on Right Rear Ear (X = +6.5mm to +10.0mm)
-    nutCircumradius = m3Nut / (2 * math.cos(math.radians(30)))
     nutPlane = Plane(origin=(cx + earOutX - 1.5, cy + 20.0, holeZ), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
     with BuildSketch(nutPlane) as nutSk:
         RegularPolygon(
