@@ -27,34 +27,22 @@ holeZ = 8.5
 # =========================================================================
 # PART 5A: Rear C-Yoke Bracket
 # =========================================================================
-leftHalfPts = [
-    (-outHalfW, 4.0),
-    (-inHalfW, 4.0),
-    (-inHalfW, 14.2),
-    (-slotHalfX, 14.2),
-    (-slotHalfX, 25.0),
-    (-earOutX, 25.0),
-    (-earOutX, 18.5),
-    (-outHalfW, 14.2),
-]
-
-rightHalfPts = [
-    (outHalfW, 14.2),
-    (earOutX, 18.5),
-    (earOutX, 25.0),
-    (slotHalfX, 25.0),
-    (slotHalfX, 14.2),
-    (inHalfW, 14.2),
-    (inHalfW, 4.0),
-    (outHalfW, 4.0),
-]
-
 with BuildPart() as part5aBuilder:
-    # 1. Extrude left and right C-yoke halves (Z = 0 to 14mm)
+    # 1. Extrude left and right C-yoke halves
     with BuildSketch(Plane(origin=(cx, cy, 0), x_dir=(1, 0, 0), z_dir=(0, 0, 1))) as yokeSk:
+        leftHalfPts = [
+            (-outHalfW, 4.0),
+            (-inHalfW, 4.0),
+            (-inHalfW, 14.2),
+            (-slotHalfX, 14.2),
+            (-slotHalfX, 25.0),
+            (-earOutX, 25.0),
+            (-earOutX, 18.5),
+            (-outHalfW, 14.2),
+        ]
         Polygon(*leftHalfPts, align=None)
-        Polygon(*rightHalfPts, align=None)
     extrude(amount=yokeH)
+    mirror(about=Plane.YZ.offset(cx))
 
     # 2. Union the 3.0mm base bridge (X: cx - earOutX to cx + earOutX, Y: cy + 14.2 to cy + 25.0, Z: 0 to 3.0)
     with Locations((cx - earOutX, cy + 14.2, 0.0)):
