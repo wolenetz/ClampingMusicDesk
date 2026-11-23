@@ -12,7 +12,6 @@ m3Nut = 5.6
 
 cx = 835.0
 cy = 0.0
-yokeH = 14.0
 
 # Updated for central wide dovetail engagement:
 # Inner span should be upper desk's guideCentralHalfW + some clearance
@@ -25,6 +24,7 @@ camThick = 19.0  # Should be no larger than upper desk's grooveHalfWidth (26.95m
 slotHalfX = camThick / 2 + 0.15 # Cam lever slot in which the cam should fit snugly
 
 holeZ = 8.5
+yokeH = holeZ * 2
 nutCircumradius = m3Nut / (2 * math.cos(math.radians(30)))
 
 # =========================================================================
@@ -57,6 +57,7 @@ with BuildPart() as part5aBuilder:
         Polygon(*leftSupportPts, align=None)
     extrude(amount=holeZ-nutCircumradius-0.15)
     mirror(about=Plane.YZ.offset(cx))
+    mirror(about=Plane.XY.offset(holeZ))
 
 
     # 2. Union the 3.0mm base bridge (X: cx - earOutX to cx + earOutX, Y: cy + 14.2 to cy + 25.0, Z: 0 to 3.0)
