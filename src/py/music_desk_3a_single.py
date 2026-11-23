@@ -51,7 +51,7 @@ guideTopZ = lowerH - 50.0
 # L/R sliders:
 guideLRHalfW = 16.0
 # Central Wide Female Dovetail Receiver for Upper Desk Cam Lock Engagement
-guideCentralHalfW = 37.0
+guideCentralHalfW = 40.0  # thicker guide sides versus v1 to allow for m3 to fully seat
 centralReceiverZStart = 50.0          # Same Z start as vertical slider housings
 centralRecHalfNeck = 27.0 + slideTol   # Neck half-width to fit wide male dovetail (~72mm total)
 centralRecHalfWide = 30.0 + slideTol   # Wide face half-width to flare with male dovetail (~86mm total)
