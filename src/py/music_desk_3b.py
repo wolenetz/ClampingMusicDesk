@@ -118,6 +118,7 @@ with BuildPart() as part3bBuilder:
         for g in range(45):
             # TODO: here and in cam lock lever, change the grip pitch to be something larger and deeper to get
             #       a better lock/fit. 2.5 and gDepth need adjusting here and similar adjustment in upper cam lock lever.
+            #       Before refactorings, closest X-axis lever hole to tip of nearest V was 5.85mm.
             gz = runnerBotZ + 10.0 + (g * 2.5)
             # Grooves only on central dovetail rear face - indexed around X=0
             groovePts = [

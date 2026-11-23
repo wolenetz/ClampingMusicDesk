@@ -20,8 +20,8 @@ inHalfW = 40.5   # 81mm inner span - just wider than central dovetail neck (~80m
 outHalfW = 46.0  # 92mm outer arms for structural rigidity when wedging cam lock tight
 
 earOutX = 15.0   # Wider rear ear span to accommodate M3x20mm axle + nut assembly
-# TODO thicken the cam and this param to have a wider lock grip with the upper desk male central dovetail.
-slotHalfX = 5.25 # Cam lever slot (unchanged - still fits 9.8mm thick cam)
+camThick = 22.0  # Should be no larger than upper desk's grooveHalfWidth (26.95mm) minus some tolerance
+slotHalfX = camThick / 2 + 0.15 # Cam lever slot in which the cam should fit snugly
 holeZ = 8.5
 
 # =========================================================================
@@ -106,7 +106,6 @@ part5a.label = "Part 5A - Rear Cam-Lock Yoke"
 # =========================================================================
 lcx = cx + outHalfW + 45.0
 lcy = cy + 15.0
-camThick = 9.8
 
 camPts = [
     (-4.00, 0.00),   # c1: Unlocked face resting against runner (R = 4.00mm -> 2.0mm gap)
