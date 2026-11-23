@@ -27,6 +27,8 @@ lipH = 8.0                        # 8.0mm upward front retention lip
 
 yFrontEdge = cy - plateT - shelfD - lipT  # -59.0mm
 railXOffsets = [-75.0, 75.0]
+#riserXOffsets = [-75.0, 75.0]  # dual riser TODO refactor out builder and merge files
+riserXOffsets = [0] # single riser
 
 # 2 Parameters: Continuous Profiled Book Shelf + Front Lip + 4mm Inside Root Chamfer
 lipTopZ = shelfT + lipH           # 16.0mm
@@ -77,13 +79,6 @@ dOuter = 2.0
 dInner = -18.0 - tol
 halfNeck = 13.0 + tol
 halfWide = 19.0 + tol
-
-doveCutPts = [
-    (-halfNeck, dOuter),
-    (halfNeck, dOuter),
-    (halfWide, dInner),
-    (-halfWide, dInner),
-]
 
 sYOut = guideDepth + 1.0
 sYIn = 5.0 - slideTol
@@ -173,17 +168,24 @@ with BuildPart() as part3aBuilder:
             mode=Mode.ADD,
         )
 
-    # 7. Center Angled Heavy-Duty Riser Receiver Block (64mm wide x 95mm tall housing)
-    wedgePlane = Plane(origin=(cx - recHalfW, cy, 0.0), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
-    with BuildSketch(wedgePlane) as wedgeSketch:
-        Polygon(*wedgePts, align=None)
-    extrude(wedgeSketch.sketch, amount=recHalfW * 2.0, mode=Mode.ADD)
+    # 7. Center Angled Heavy-Duty Riser Receiver Block(s)
+    for roff in riserXOffsets:
+        wedgePlane = Plane(origin=(cx + roff - recHalfW, cy, 0.0), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
+        with BuildSketch(wedgePlane) as wedgeSketch:
+            Polygon(*wedgePts, align=None)
+        extrude(wedgeSketch.sketch, amount=recHalfW * 2.0, mode=Mode.ADD)
 
-
-    # 8A. Cut Center Angled Riser Female Dovetail
+    # 8A. Cut Center Angled Riser Female Dovetail(s)
     doveCutPlane = Plane(origin=cornerOrigin, x_dir=(1, 0, 0), z_dir=uSlide)
     with BuildSketch(doveCutPlane) as doveCutSketch:
-        Polygon(*doveCutPts, align=None)
+        for roff in riserXOffsets:
+            doveCutPts = [
+                (roff -halfNeck, dOuter),
+                (roff + halfNeck, dOuter),
+                (roff + halfWide, dInner),
+                (roff -halfWide, dInner),
+            ]
+            Polygon(*doveCutPts, align=None)
     extrude(doveCutSketch.sketch, amount=79.0, mode=Mode.SUBTRACT)
 
     # 8B. Cut LR and Central Vertical Slider Female Dovetails (Z = 50mm to 182mm)

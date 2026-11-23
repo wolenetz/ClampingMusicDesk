@@ -39,7 +39,7 @@ import upper_desk_cam_lock
 import music_desk_3a_single
 #show_one(music_desk_3a_single.part3a)
 show_multiple([
-    #music_desk_3a_single.part3a,
-    #music_desk_3b.part3b,
+    music_desk_3a_single.part3a,
+    music_desk_3b.part3b,
     *upper_desk_cam_lock.camLockAssembly.children
 ])
