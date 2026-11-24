@@ -1,5 +1,7 @@
 # **Clamping Music Desk for OnStage Keyboard Stand**
 
+# ** WIP on version 2.0 right now -- this documentation has not yet been updated **
+
 ## Project Overview
 
 A 3D-printed clamping music desk that can be assembled in multiple configurations (single-riser, dual-riser, full/low-profile, extra-tall) to hold sheet music or books. It attaches to an "OnStage" brand keyboard stand.
