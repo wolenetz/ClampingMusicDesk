@@ -265,8 +265,8 @@ pageClampsAssembly = Compound(
 )
 
 if __name__ == "__main__":
-    export_step(pageClampsAssembly, "part4_pageClamps.step")
-    export_stl(part4a, "part4a_swanNeckLeafSpring.stl")
-    export_stl(part4b1, "part4b1_knuckleHingeBase.stl")
-    export_stl(part4b2, "part4b2_clevisBatwingFinger.stl")
-    export_stl(part4c, "part4c_deepReachSSpring.stl")
+    export_step(pageClampsAssembly, "renders/part4_pageClamps.step")
+    export_stl(part4a, "renders/part4a_swanNeckLeafSpring.stl")
+    export_stl(part4b1, "renders/part4b1_knuckleHingeBase.stl")
+    export_stl(part4b2, "renders/part4b2_clevisBatwingFinger.stl")
+    export_stl(part4c, "renders/part4c_deepReachSSpring.stl")

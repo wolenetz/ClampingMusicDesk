@@ -245,7 +245,7 @@ part3aDual = getPart3a(False)
 part3aDual.label = "Part 3A-Dual - Dual Riser Lower Music Desk"
 
 if __name__ == "__main__":
-    export_step(part3a, "part3a_lowerStationaryMusicDesk.step")
-    export_stl(part3a, "part3a_lowerStationaryMusicDesk.stl")
-    export_step(part3aDual, "part3aDual_dualRiserLowerMusicDesk.step")
-    export_stl(part3aDual, "part3aDual_dualRiserLowerMusicDesk.stl")
+    export_step(part3a, "renders/part3a_lowerStationaryMusicDesk.step")
+    export_stl(part3a, "renders/part3a_lowerStationaryMusicDesk.stl")
+    export_step(part3aDual, "renders/part3aDual_dualRiserLowerMusicDesk.step")
+    export_stl(part3aDual, "renders/part3aDual_dualRiserLowerMusicDesk.stl")

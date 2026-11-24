@@ -133,5 +133,5 @@ part3b = part3bBuilder.part
 part3b.label = "Part 3B - Upper Sliding Music Desk with Central Cam Lock"
 
 if __name__ == "__main__":
-    export_step(part3b, "part3b_upperSlidingMusicDesk.step")
-    export_stl(part3b, "part3b_upperSlidingMusicDesk.stl")
+    export_step(part3b, "renders/part3b_upperSlidingMusicDesk.step")
+    export_stl(part3b, "renders/part3b_upperSlidingMusicDesk.stl")

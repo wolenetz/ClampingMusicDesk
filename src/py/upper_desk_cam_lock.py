@@ -159,6 +159,6 @@ camLockAssembly = Compound(
 )
 
 if __name__ == "__main__":
-    export_step(camLockAssembly, "part5a_5b_camLock.step")
-    export_stl(part5a, "part5a_rearCYoke.stl")
-    export_stl(part5b, "part5b_eccentricCamLever.stl")
+    export_step(camLockAssembly, "renders/part5a_5b_camLock.step")
+    export_stl(part5a, "renders/part5a_rearCYoke.stl")
+    export_stl(part5b, "renders/part5b_eccentricCamLever.stl")

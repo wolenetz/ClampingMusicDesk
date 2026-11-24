@@ -200,6 +200,6 @@ riserStemAssembly = Compound(
 )
 
 if __name__ == "__main__":
-    export_step(riserStemAssembly, "part2a_2b_riserStem.step")
-    export_stl(part2a, "part2a_lowerRiserExtension.stl")
-    export_stl(part2b, "part2b_upperDovetailHead.stl")
+    export_step(riserStemAssembly, "renders/part2a_2b_riserStem.step")
+    export_stl(part2a, "renders/part2a_lowerRiserExtension.stl")
+    export_stl(part2b, "renders/part2b_upperDovetailHead.stl")
