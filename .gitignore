@@ -5,3 +5,5 @@
 onshape_config.json
 .claude/
 __pycache__/
+src/py/ai_scratchpad/
+src/py/tmp/
