@@ -1,6 +1,13 @@
-## Clamping Music Desk for OnStage Keyboard Stand
+## Clamping Music Desk for OnStage Keyboard Stand v1.0
 **OrcaSlicer & Prusa CORE One Print Guide**
 
+## Source location
+
+- v1.0 and some more recent work on vNext are hosted on my github:
+
+    - [v1.0 release](https://github.com/wolenetz/ClampingMusicDesk/tree/release/1.0)
+
+    - [vNext (possibly WIP)](https://github.com/wolenetz/ClampingMusicDesk)
 
 ### OrcaSlicer Settings
 
