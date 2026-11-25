@@ -1,6 +1,15 @@
 ## Clamping Music Desk for OnStage Keyboard Stand
 **OrcaSlicer & Prusa CORE One Print Guide**
 
+### Improvements over v1
+
+- Lower clamp is much narrower (faster prints, less material)
+
+- Improved cam-lever latch and guides should ease setting the desired upper desk height.
+
+*Behind the scenes, I switched from OnShape to build123d/OCP/ocp_vscode to speed further design iterations of this and other models. Local AI was not good enough yet to significantly help design coding work, as I discovered during this process, though I tried many variations.
+I labeled v1 and v2 as having AI assistance: I used cloud AI (gemini argon) for the initial v1 drafts and the conversions of OnShape featurescript to build123d python at the start of v2 work. Much of that has been manually updated in v2.*
+
 ### Source location
 
 - Hosted on my github:
