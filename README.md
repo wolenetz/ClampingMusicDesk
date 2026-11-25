@@ -1,6 +1,6 @@
 # **Clamping Music Desk for OnStage Keyboard Stand**
 
-# ** WIP on version 2.0 right now -- this documentation has not yet been updated **
+# ** WIP on version 2.0 documentation right now -- this README still needs updates **
 
 ## Project Overview
 
