@@ -47,7 +47,7 @@
 <p><strong>Infill:</strong> 40% Cubic  </p>
 </li>
 <li>
-<p><strong>Brim:</strong> 25 mm outer brim for tall/long parts (1A, 1B, 2A, 2B, 3A/3A-Dual, 3B). Set brim-part distance to 0.0.</p>
+<p><strong>Brim:</strong> 25 mm outer brim for all parts. Set brim-object distance to 0.0. Bed peeling can be a problem otherwise.</p>
 </li>
 <li>
 <p><strong>Infill Rotation:</strong> Rotate the infill to match part rotation when applicable for improved strength.</p>
@@ -73,19 +73,19 @@
 <tr>
 <td>Part 1B</td>
 <td>Flat bottom face</td>
-<td>90°</td>
+<td>135°</td>
 <td>Yes (<em>On build plate only</em>)</td>
 </tr>
 <tr>
 <td>Part 2A</td>
 <td>Back face</td>
-<td>0° or multiple of 90°</td>
+<td>135°</td>
 <td>Yes (<em>On build plate only</em>)</td>
 </tr>
 <tr>
 <td>Part 2B</td>
 <td>Back face</td>
-<td>0° or multiple of 90°</td>
+<td>135°</td>
 <td>Yes (<em>On build plate only</em>)</td>
 </tr>
 <tr>
@@ -116,7 +116,7 @@
 <td>Part 4B2</td>
 <td>Flat top surface</td>
 <td>Any</td>
-<td>Optional</td>
+<td>Yes (<em>On build plate only</em>)</td>
 </tr>
 <tr>
 <td>Part 4C</td>
@@ -128,7 +128,7 @@
 <td>Part 5A</td>
 <td>Flat bottom face</td>
 <td>Any</td>
-<td>Optional</td>
+<td>Yes (<em>On build plate only</em>)</td>
 </tr>
 <tr>
 <td>Part 5B</td>
@@ -146,12 +146,18 @@
 </li>
 <li>
 <p><strong>Heavy-Duty Dual-Riser Setup:</strong> Print 2× Part 1A, 2× Part 1B, 2× Part 2A, 2× Part 2B, 1× Part 3A-Dual, 1× Part 3B, page clamps, 2× Part 5A, 2× Part 5B.</p>
+<ul>
+<li>Note: I haven't attempted dual-riser setup since single worked for me.</li>
+</ul>
 </li>
 <li>
 <p><strong>Low-Profile:</strong> Omit Part 2A.</p>
 </li>
 <li>
 <p><strong>Tall-Profile:</strong> Print more Part 2A.</p>
+</li>
+<li>
+<p><strong>Multiple desks:</strong> I have a v1 and a v2 side-by-side in my setup. ~24cm between similar riser faces.</p>
 </li>
 </ul>
 <h5>Fasteners &amp; Mounting</h5>
@@ -178,16 +184,25 @@
 <ul>
 <li>
 <p><strong>Part 5A (C-Yoke):</strong> Slip over the back of Part 3A's guide block and carefully anchor with <strong>2× M4 (or M3) × 10 mm screws</strong></p>
+<ul>
+<li>Ensure the screw tips do not protrude into the upper desk dovetail's space</li>
+</ul>
 </li>
 <li>
-<p><strong>Part 5B (Cam Lever):</strong> Insert into C-Yoke center slot, drop an <strong>M3 hex nut</strong> into the right ear pocket (pliers may help snap it into the pocket), and secure with <strong>1× M3 × 20 mm screw</strong></p>
+<p><strong>Part 5B (Cam Lever):</strong> Insert into C-Yoke center slot, drop an <strong>M3 hex nut</strong> into the right ear pocket (pliers may help snap it into the pocket), and secure with <strong>1× M3 × 30 mm screw</strong></p>
+<ul>
+<li>Do not over-tighten this screw, as the C-yoke may warp or the lever may bind.</li>
+</ul>
 </li>
 </ul>
 </li>
 <li>
 <p><strong>Batwing (Part 4B1/4B2):</strong> Assembled with <strong>1× M3 screw</strong> (30 mm works great) and <strong>1× M3 hex nut</strong></p>
+<ul>
+<li>Do not over-tighten this screw: the batwing should rotate freely.</li>
+</ul>
 </li>
 <li>
-<p><strong>Break-In:</strong> Slide all dovetails back and forth 5–10 times before final mounting.</p>
+<p><strong>Break-In:</strong> Slide all clamp dovetails back and forth 5–10 times on the accessory rail.</p>
 </li>
 </ul>
