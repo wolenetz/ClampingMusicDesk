@@ -56,6 +56,7 @@ I labeled v1 and v2 as having AI assistance: I used cloud AI (gemini argon) for 
 | Part 4C | Flat side face | Any | Optional |
 | Part 5A | Flat bottom face | Any | Yes (*On build plate only*)|
 | Part 5B | Flat side face | Any | Optional |
+| Riser-to-Riser Cross Brace | Bottom face | 40.5° (STL already rotated) | Optional |
 
 ### Hardware & Assembly
 
@@ -73,15 +74,23 @@ I labeled v1 and v2 as having AI assistance: I used cloud AI (gemini argon) for 
 
 - **Multiple desks:** I have a v1 and a v2 side-by-side in my setup. ~24cm between similar riser faces.
 
+    - To help reduce side-to-side and front-to-back variances across the two desks, print one or two riser-to-riser cross braces for desks immediately adjacent to each other.
+
+    - Alignment of multiple desks to have same plane can be tricky. Use braces and also adjust the lower clamp screws to align the riser faces.
+
 #### Fasteners & Mounting
 
 - **Clamps & Dorsal Tension Spine:** Secured with 5× M3 × 30 mm screws and 5× M3 hex nuts (10× screws and 10× nuts total for Dual-Riser).
 
-- **Modular Riser Locks:**
+- **Modular Risers:**
 
     - *Standard Full Height:* Secured with 2× M4 × 30 mm screws and 2× M4 hex nuts
 
     - *Low-Profile:* Uses 1× M4 × 30 mm screw and 1× M4 hex nut per column
+
+- **Optional Multi-Desk Riser-to-Riser Braces:**
+
+    - Each braces fastens with 2x M4 x 10mm screws
 
 - **Dual-Riser Stand Spacing:** Mount the two Part 1A/1B clamp assemblies spaced **150 mm (approx. 5.9 in) apart center-to-center**.
 

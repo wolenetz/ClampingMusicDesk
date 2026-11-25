@@ -41,6 +41,7 @@ if __name__ == "__main__":
     import music_desk_3b
     import upper_desk_cam_lock
     import page_clamps
+    import riser_brace
     show_multiple([
         #l_clamp.lClampAssembly.children,  # legacy, holding onto it though until narrow is proven working in print.
         narrow_clamp.lClampAssembly.children,
@@ -49,5 +50,6 @@ if __name__ == "__main__":
         music_desk_3a.part3aDual,
         music_desk_3b.part3b,
         page_clamps.pageClampsAssembly.children,
-        *upper_desk_cam_lock.camLockAssembly.children
+        *upper_desk_cam_lock.camLockAssembly.children,
+        riser_brace.retrofit_brace
 ])
