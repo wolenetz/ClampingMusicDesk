@@ -101,6 +101,16 @@ with BuildPart() as part3bBuilder:
                 mode=Mode.ADD,
             )
 
+    # 2B-Central. Upper Stand-Off Webs (Bridges Y = 0mm to Y = +6mm behind Upper Plate from Z = 130mm to 143mm)
+    with Locations((cx - centralHalfWide, cy, headBotZ)):
+        Box(
+            2.0 * centralHalfWide,
+            6.0,
+            runnerTopZ - headBotZ,
+            align=(Align.MIN, Align.MIN, Align.MIN),
+            mode=Mode.ADD,
+        )
+    
     # 3. Part 4 Horizontal Clamp Accessory Rail on Top Back of Part 3B (Z = 150mm to 178mm)
     railPlane = Plane(origin=(cx - halfW + railInset, cy, 0.0), x_dir=(0, 1, 0), z_dir=(1, 0, 0))
     with BuildSketch(railPlane) as railSketch:
