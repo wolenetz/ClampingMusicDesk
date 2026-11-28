@@ -5,7 +5,15 @@
 ## Project Overview
 
 A 3D-printed clamping music desk that can be assembled in multiple configurations (single-riser, dual-riser, full/low-profile, extra-tall) to hold sheet music or books. It attaches to an "OnStage" brand keyboard stand.
-CAD model was built interactively with various local and cloud AI tools, targeting cloud OnShape (v1), and currently targeting local native build123d+FreeCad (vNext iterations).
+CAD model was built interactively with various local and cloud AI tools, targeting cloud OnShape (v1), and currently targeting local native build123d+FreeCad+ocp_vscode (v2+ iterations).
+
+### Renders Published At:
+
+- Printables.com
+    - [v1](https://www.printables.com/model/1906901-clamping-music-desk-for-onstage-keyboard-stand-v1)
+    - [v2](https://www.printables.com/model/1929274-clamping-music-desk-for-onstage-keyboard-stand-v2)
+- Thingiverse.com
+    - [v2](https://www.thingiverse.com/thing:7441869)
 
 ### Key Technologies
 - **OnShape** – cloud CAD platform with FeatureScript (V1, legacy)
@@ -34,7 +42,7 @@ CAD model was built interactively with various local and cloud AI tools, targeti
 ├── PrintingGuide.md    # Print & assembly guide (automatically updates PrintingGuide-printables.html for Printables.com)
 ```
 
-- V1 uses OnShape FeatureScript; vNext uses build123d Python. New iterations develop in `src/py/`.
+- V1 uses OnShape FeatureScript; v2+ use build123d Python. New iterations develop in `src/py/`.
 
 ## Getting Started
 
