@@ -43,7 +43,6 @@ if __name__ == "__main__":
     import page_clamps
     import riser_brace
     show_multiple([
-        #l_clamp.lClampAssembly.children,  # legacy, holding onto it though until narrow is proven working in print.
         narrow_clamp.lClampAssembly.children,
         riser_stem.riserStemAssembly.children,
         music_desk_3a.part3a,
