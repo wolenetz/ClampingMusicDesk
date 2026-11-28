@@ -2,7 +2,7 @@ ISO-10303-21;
 HEADER;
 FILE_DESCRIPTION(('Open CASCADE Model'),'2;1');
 FILE_NAME('Part 3A-Single - Single Riser Lower Music Desk',
-  '2026-11-24T00:11:49',('Author'),('Open CASCADE'),
+  '2026-11-28T05:24:45',('Author'),('Open CASCADE'),
   'Open CASCADE STEP processor 7.8','build123d','Unknown');
 FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
 ENDSEC;

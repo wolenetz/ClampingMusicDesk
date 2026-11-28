@@ -81,7 +81,7 @@ def getPart3a(single=True):
 
     # 8 Parameters: Angled Riser Female Dovetail & Dual Vertical Slider Female Dovetails
     uSlide = Vector(0.0, -math.sin(deskAngleRad), math.cos(deskAngleRad))
-    cornerOrigin = Vector(cx, baseDepth, 0.0) - (uSlide * 8.0)
+    cornerOrigin = Vector(cx, cy + baseDepth, 0.0) - (uSlide * 8.0)
 
     dOuter = 2.0
     dInner = -18.0 - tol
@@ -184,17 +184,17 @@ def getPart3a(single=True):
             extrude(wedgeSketch.sketch, amount=recHalfW * 2.0, mode=Mode.ADD)
 
         # 8A. Cut Center Angled Riser Female Dovetail(s)
-        doveCutPlane = Plane(origin=cornerOrigin, x_dir=(1, 0, 0), z_dir=uSlide)
-        with BuildSketch(doveCutPlane) as doveCutSketch:
-            for roff in riserXOffsets:
+        for roff in riserXOffsets:
+            doveCutPlane = Plane(origin=cornerOrigin, x_dir=(1, 0, 0), z_dir=uSlide)
+            with BuildSketch(doveCutPlane) as doveCutSketch:
                 doveCutPts = [
-                    (roff -halfNeck, dOuter),
+                    (roff - halfNeck, dOuter),
                     (roff + halfNeck, dOuter),
                     (roff + halfWide, dInner),
-                    (roff -halfWide, dInner),
+                    (roff - halfWide, dInner),
                 ]
                 Polygon(*doveCutPts, align=None)
-        extrude(doveCutSketch.sketch, amount=79.0, mode=Mode.SUBTRACT)
+            extrude(doveCutSketch.sketch, amount=79.0, mode=Mode.SUBTRACT)
 
         # 8B. Cut LR and Central Vertical Slider Female Dovetails (Z = 50mm to 182mm)
         femaleDovetailSliderGuidePlane = Plane(origin=(cx, cy, guideBotZ), x_dir=(1, 0, 0), z_dir=(0, 0, 1))
